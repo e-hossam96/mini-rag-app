@@ -47,7 +47,7 @@ conda activate mini-rag
 cp .env.example .env
 ```
 
-- Run the `FastAPI` server. Use the `--reload` argument only for development.
+- Run the `FastAPI` server. Use the `--reload` argument only for development. A **Postman** collection is available in the [assets](./assets/mini-rag-app.postman_collection.json) directory for your help.
 
 ```bash
 uvicorn main:app --reload --host 0.0.0.0 --port 8000
