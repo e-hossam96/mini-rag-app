@@ -41,8 +41,8 @@ conda env create -f environment.yml
 conda activate mini-rag
 ```
 
-- Fill [example.env](./example.env) file and save it into a `.env` file.
+- Fill [.env.example](./.env.example) file and save it into a `.env` file.
 
 ```bash
-cp example.env .env
+cp .env.example .env
 ```
