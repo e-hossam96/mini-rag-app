@@ -1,0 +1,14 @@
+name: mini-rag
+channels:
+  - conda-forge
+  - anaconda
+  - defaults
+dependencies:
+  - python=3.11.9
+  - pip=24.2
+  - pip:
+      - python-dotenv==1.0.1
+      - wandb==0.18.5
+      - emoji==2.14.0
+      - rich[jupyter]==13.9.2
+      - tqdm==4.66.5
