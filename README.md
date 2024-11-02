@@ -46,3 +46,9 @@ conda activate mini-rag
 ```bash
 cp .env.example .env
 ```
+
+- Run the `FastAPI` server. Use the `--reload` argument only for development.
+
+```bash
+uvicorn main:app --reload --host 0.0.0.0 --port 8000
+```
