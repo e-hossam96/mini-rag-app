@@ -1,6 +1,6 @@
 # mini-rag-app
 
-Minimal RAG Application
+Minimal RAG Application.
 
 ## Setup
 
