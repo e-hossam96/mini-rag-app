@@ -12,3 +12,6 @@ dependencies:
       - emoji==2.14.0
       - rich[jupyter]==13.9.2
       - tqdm==4.66.5
+      - fastapi[standard]==0.115.4
+      - uvicorn[standard]==0.32.0
+      - python-multipart==0.0.17
