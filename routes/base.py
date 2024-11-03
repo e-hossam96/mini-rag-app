@@ -3,7 +3,7 @@
 from fastapi import APIRouter
 
 
-base_router = APIRouter()
+base_router = APIRouter(prefix="/app/v1", tags=["api_v1"])
 
 
 @base_router.get("/")
