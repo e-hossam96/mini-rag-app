@@ -1,12 +1,15 @@
 """Implementaation of base routers."""
 
+import os
 from fastapi import APIRouter
 
-
-base_router = APIRouter(prefix="/app/v1", tags=["api_v1"])
+base_router = APIRouter(prefix="/api/v1", tags=["api_v1"])
 
 
 @base_router.get("/")
 def welcome() -> dict:
-    resp = {"message": "Hello All!"}
+    resp = {
+        "app_name": os.getenv("APPLICATION_NAME"),
+        "app_version": os.getenv("APPLICATION_VERSION"),
+    }
     return resp
