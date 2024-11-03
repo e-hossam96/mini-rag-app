@@ -7,17 +7,18 @@
 	},
 	"item": [
 		{
-			"name": "welcome",
+			"name": "base",
 			"request": {
 				"method": "GET",
 				"header": [],
 				"url": {
-					"raw": "{{api}}/welcome",
+					"raw": "{{api}}/api/v1",
 					"host": [
 						"{{api}}"
 					],
 					"path": [
-						"welcome"
+						"api",
+						"v1"
 					]
 				}
 			},
