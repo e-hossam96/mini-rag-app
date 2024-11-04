@@ -22,12 +22,13 @@ async def upload_data(
         )
         return resp
     # upload file to server
-    file_path = data_controller.get_unique_file_path(project_id, file.filename)
+    file_path, file_id = data_controller.get_unique_file_path(project_id, file.filename)
     is_written, write_signal = await data_controller.write_uploaded_file(
         file, file_path
     )
     resp_content = {"signal": write_signal}
     if is_written:
+        resp_content["file_id"] = file_id
         resp = JSONResponse(content=resp_content, status_code=status.HTTP_200_OK)
     else:
         resp = JSONResponse(
