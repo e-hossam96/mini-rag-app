@@ -36,7 +36,7 @@ source ./miniconda/bin/activate
 - Create **mini-rag** env from [YAML](./environment.yml) file
 
 ```bash
-cd mini-rag-app
+cd mini-rag-app/src
 conda env create -f environment.yml
 conda activate mini-rag
 ```
