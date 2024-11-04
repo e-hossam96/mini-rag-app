@@ -1,5 +1,6 @@
 """Defining Base Controller class."""
 
+import re
 import string
 import random
 import pathlib
@@ -18,3 +19,6 @@ class BaseController:
     def generate_random_string(self, length: int = 12) -> str:
         population = string.ascii_lowercase + string.digits
         return "".join(random.choices(population=population, k=length))
+
+    def get_clean_filename(self, filename) -> str:
+        return re.sub(r"\W", r"_", filename)
