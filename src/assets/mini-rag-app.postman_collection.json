@@ -23,6 +23,37 @@
 				}
 			},
 			"response": []
+		},
+		{
+			"name": "upload",
+			"request": {
+				"method": "POST",
+				"header": [],
+				"body": {
+					"mode": "formdata",
+					"formdata": [
+						{
+							"key": "file",
+							"type": "file",
+							"src": "postman-cloud:///1ef9a211-6bf0-4370-a6c4-5964ff791d46"
+						}
+					]
+				},
+				"url": {
+					"raw": "{{api}}/api/v1/data/upload/1",
+					"host": [
+						"{{api}}"
+					],
+					"path": [
+						"api",
+						"v1",
+						"data",
+						"upload",
+						"1"
+					]
+				}
+			},
+			"response": []
 		}
 	],
 	"event": [
@@ -50,7 +81,7 @@
 	"variable": [
 		{
 			"key": "api",
-			"value": "http://127.0.0.1:8000",
+			"value": "http://0.0.0.0:8000",
 			"type": "string"
 		}
 	]
