@@ -1,5 +1,7 @@
 """Defining Data Controller class."""
 
+import pathlib
+import aiofiles
 from fastapi import UploadFile
 from .BaseController import BaseController
 from models.enums.ResponseSignal import ResponseSignal
@@ -15,4 +17,18 @@ class DataController(BaseController):
             result = False, ResponseSignal.FILE_TYPE_NOT_SUPPORTED.value
         elif file.size > self.app_settings.FILE_MAX_SIZE * self.file_scale:
             result = False, ResponseSignal.FILE_EXCEEDED_MAX_SIZE.value
+        return result
+
+    async def write_uploaded_file(
+        self, file: UploadFile, file_path: pathlib.Path
+    ) -> tuple[bool, str]:
+        result = True, ResponseSignal.FILE_UPLOAD_SUCCEEDED.value
+        try:
+            async with aiofiles.open(file_path, "wb") as f:
+                while chunk := await file.read(
+                    size=self.app_settings.FILE_CHUNK_SIZE * self.file_scale
+                ):  # walrus operator
+                    await f.write(chunk)
+        except Exception as e:
+            result = False, ResponseSignal.FILE_UPLOAD_FAILED.value
         return result
