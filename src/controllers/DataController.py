@@ -20,15 +20,19 @@ class DataController(BaseController):
             result = False, ResponseSignal.FILE_EXCEEDED_MAX_SIZE.value
         return result
 
-    def get_unique_file_path(self, project_id: str, filename: str) -> pathlib.Path:
+    def get_unique_file_path(
+        self, project_id: str, filename: str
+    ) -> tuple[pathlib.Path, str]:
         project_path = ProjectController().get_project_path(project_id)
         clean_filename = self.get_clean_filename(filename)
         prefix = self.generate_random_string()
-        file_path = project_path.joinpath(f"{prefix}__{clean_filename}")
+        file_id = f"{prefix}__{clean_filename}"
+        file_path = project_path.joinpath(file_id)
         while file_path.exists():
             prefix = self.generate_random_string()
-            file_path = project_path.joinpath(f"{prefix}__{clean_filename}")
-        return file_path
+            file_id = f"{prefix}__{clean_filename}"
+            file_path = project_path.joinpath(file_id)
+        return file_path, file_id
 
     async def write_uploaded_file(
         self, file: UploadFile, file_path: pathlib.Path
