@@ -21,4 +21,4 @@ class BaseController:
         return "".join(random.choices(population=population, k=length))
 
     def get_clean_filename(self, filename) -> str:
-        return re.sub(r"\W", r"_", filename)
+        return re.sub(r"\W", r".", filename)
