@@ -16,3 +16,4 @@ dependencies:
       - uvicorn[standard]==0.32.0
       - python-multipart==0.0.17
       - pydantic-settings==2.6.1
+      - aiofiles==24.1.0
