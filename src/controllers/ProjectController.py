@@ -9,7 +9,7 @@ class ProjectController(BaseController):
         super().__init__()
 
     def get_project_path(self, project_id: str) -> pathlib.Path:
-        project_path = self.base_dir_path.joinpath(project_id)
+        project_path = self.files_dir_path.joinpath(project_id)
         # take care when using parents in mkdir
         # we are sure parents exist. we will set it to True
         # in case project has nested directories
