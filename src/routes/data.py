@@ -1,7 +1,6 @@
 """Implementaation of data routers."""
 
 from controllers.DataController import DataController
-from controllers.ProjectController import ProjectController
 from fastapi import APIRouter, Depends, UploadFile, status
 from fastapi.responses import JSONResponse
 from helpers.config import get_settings, Settings
@@ -23,9 +22,10 @@ async def upload_data(
         )
         return resp
     # upload file to server
-    project_path = ProjectController().get_project_path(project_id)
-    file_path = project_path.joinpath(file.filename)
-    is_written, write_signal = await data_controller.write_uploaded_file(file, file_path)
+    file_path = data_controller.get_unique_file_path(project_id, file.filename)
+    is_written, write_signal = await data_controller.write_uploaded_file(
+        file, file_path
+    )
     resp_content = {"signal": write_signal}
     if is_written:
         resp = JSONResponse(content=resp_content, status_code=status.HTTP_200_OK)
