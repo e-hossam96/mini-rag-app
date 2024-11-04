@@ -8,7 +8,6 @@ from models.enums.ResponseSignal import ResponseSignal
 class DataController(BaseController):
     def __init__(self) -> None:
         super().__init__()
-        self.file_scale = 1_048_576
 
     def validate_upload_file(self, file: UploadFile) -> tuple[bool, str]:
         result = True, ResponseSignal.FILE_PASSED_VALIDATION.value
