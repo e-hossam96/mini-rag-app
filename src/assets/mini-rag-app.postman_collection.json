@@ -54,6 +54,36 @@
 				}
 			},
 			"response": []
+		},
+		{
+			"name": "process",
+			"request": {
+				"method": "POST",
+				"header": [],
+				"body": {
+					"mode": "raw",
+					"raw": "{\r\n    \"process_file_id\": \"tf2eedzuc4kf__wiki.txt\"\r\n}",
+					"options": {
+						"raw": {
+							"language": "json"
+						}
+					}
+				},
+				"url": {
+					"raw": "{{api}}/api/v1/data/process/1",
+					"host": [
+						"{{api}}"
+					],
+					"path": [
+						"api",
+						"v1",
+						"data",
+						"process",
+						"1"
+					]
+				}
+			},
+			"response": []
 		}
 	],
 	"event": [
