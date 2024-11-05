@@ -43,7 +43,7 @@ class ProcessController(BaseController):
     ) -> list[Document]:
         text_splitter = RecursiveCharacterTextSplitter(
             chunk_size=chunk_size,
-            overlap_size=overlap_size,
+            chunk_overlap=overlap_size,
         )
         texts = [doc.page_content for doc in file_content]
         metadata = [doc.metadata for doc in file_content]
