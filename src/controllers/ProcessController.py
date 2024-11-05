@@ -7,6 +7,7 @@ from .ProjectController import ProjectController
 from models.enums.ProcessConfig import ProcessConfig
 from langchain_core.documents.base import Document
 from langchain_community.document_loaders import TextLoader, PyMuPDFLoader
+from langchain_text_splitters import RecursiveCharacterTextSplitter
 
 
 class ProcessController(BaseController):
@@ -36,3 +37,15 @@ class ProcessController(BaseController):
         if file_loader is not None:
             file_content = file_loader.load()
         return file_content
+
+    def process_file_content(
+        self, file_content: list[Document], chunk_size: int, overlap_size: int
+    ) -> list[Document]:
+        text_splitter = RecursiveCharacterTextSplitter(
+            chunk_size=chunk_size,
+            overlap_size=overlap_size,
+        )
+        texts = [doc.page_content for doc in file_content]
+        metadata = [doc.metadata for doc in file_content]
+        chunks = text_splitter.create_documents(texts=texts, metadatas=metadata)
+        return chunks
