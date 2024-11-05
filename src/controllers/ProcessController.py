@@ -11,5 +11,5 @@ class ProcessController(BaseController):
         self.project_id = project_id
         self.project_path = ProjectController().get_project_path(self.project_id)
 
-    def get_file_ext(process_file_id: str) -> str:
+    def get_file_ext(self, process_file_id: str) -> str:
         return pathlib.Path(process_file_id).suffix
