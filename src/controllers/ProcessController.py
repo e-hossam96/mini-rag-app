@@ -30,7 +30,9 @@ class ProcessController(BaseController):
             file_loader = PyMuPDFLoader(str(file_path))
         return file_loader
 
-    def get_file_content(self, process_file_id: str) -> list[Document]:
+    def get_file_content(self, process_file_id: str) -> Union[list[Document], None]:
         file_loader = self.get_file_loader(process_file_id)
-        file_content = file_loader.load()
+        file_content = None
+        if file_loader is not None:
+            file_content = file_loader.load()
         return file_content
