@@ -1,8 +1,11 @@
 """Implementing data processing controller class."""
 
 import pathlib
+from typing import Union
 from .BaseController import BaseController
 from .ProjectController import ProjectController
+from models.enums.ProcessConfig import ProcessConfig
+from langchain_community.document_loaders import TextLoader, PyMuPDFLoader
 
 
 class ProcessController(BaseController):
@@ -13,3 +16,15 @@ class ProcessController(BaseController):
 
     def get_file_ext(self, process_file_id: str) -> str:
         return pathlib.Path(process_file_id).suffix
+
+    def get_file_loader(
+        self, process_file_id: str
+    ) -> Union[TextLoader, PyMuPDFLoader, None]:
+        file_ext = self.get_file_ext(process_file_id)
+        file_path = self.project_path.joinpath(process_file_id)
+        file_loader = None
+        if file_ext == ProcessConfig.TXT.value:
+            file_loader = TextLoader(file_path, encoding="utf-8")
+        elif file_ext == ProcessConfig.PDF.value:
+            file_loader = PyMuPDFLoader(str(file_path))
+        return file_loader
