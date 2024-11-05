@@ -4,4 +4,5 @@ from enum import Enum
 
 
 class ProcessConfig(Enum):
-    pass
+    TXT: str = ".txt"
+    PDF: str = ".pdf"
