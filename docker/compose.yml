@@ -1,0 +1,14 @@
+services:
+  mongo_db:
+    image: mongo:latest
+    container_name: mongo_db_local
+    ports:
+      - 27017:27017
+    volumes:
+      - ./mongodb_local:/data/db
+    networks:
+      - MongoNetwork
+    restart: always
+
+networks:
+  MongoNetwork:
