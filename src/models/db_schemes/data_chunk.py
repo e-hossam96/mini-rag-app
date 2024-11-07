@@ -12,5 +12,5 @@ class DataChunk(BaseModel):
     chunk_index: int = Field(ge=0)
     chunk_project_id: ObjectId
 
-    class config:
+    class Config:
         arbitrary_types_allowed = True
