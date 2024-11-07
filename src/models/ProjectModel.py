@@ -3,7 +3,7 @@
 from .BaseDataModel import BaseDataModel
 from motor.motor_asyncio import AsyncIOMotorDatabase
 from .enums.DatabaseConfig import DatabaseConfig
-from db_schemes.project import Project
+from .db_schemes.project import Project
 
 
 class ProjectModel(BaseDataModel):
@@ -14,19 +14,19 @@ class ProjectModel(BaseDataModel):
         ]
 
     async def create_project(self, project: Project) -> Project:
-        project_db_id = await self.db_collection.insert_one(**project.model_dump_json())
+        project_db_id = await self.db_collection.insert_one(project.model_dump())
         project._id = project_db_id.inserted_id
         return project
 
     async def get_project(self, project_id: str) -> Project:
         # get project by project_id
         # create new one if not existing
-        project = Project(project_id)
-        record = self.db_collection.find_one({"project_id": project_id})
+        project = Project(project_id=project_id)
+        record = await self.db_collection.find_one({"project_id": project_id})
         if record is None:
             project = await self.create_project(project)
         else:
-            project._id = record._id
+            project._id = record["_id"]
         return project
 
     async def get_all_project(
