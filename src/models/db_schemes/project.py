@@ -16,5 +16,5 @@ class Project(BaseModel):
             raise ValueError("{project_id} must be Alpha Numeric")
         return value
 
-    class config:
+    class Config:
         arbitrary_types_allowed = True
