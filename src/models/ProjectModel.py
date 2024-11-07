@@ -17,3 +17,14 @@ class ProjectModel(BaseDataModel):
         project_db_id = await self.db_collection.insert_one(**project.model_dump_json())
         project._id = project_db_id.inserted_id
         return project
+
+    async def get_project(self, project_id: str) -> Project:
+        # get project by project_id
+        # create new one if not existing
+        project = Project(project_id)
+        record = self.db_collection.find_one({"project_id": project_id})
+        if record is None:
+            project = await self.create_project(project)
+        else:
+            project._id = record._id
+        return project
