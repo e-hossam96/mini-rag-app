@@ -6,6 +6,7 @@ from .enums.DatabaseConfig import DatabaseConfig
 from .db_schemes.data_chunk import DataChunk
 from typing import Union
 from bson.objectid import ObjectId
+from pymongo import InsertOne
 
 
 class ChunkModel(BaseDataModel):
@@ -23,3 +24,15 @@ class ChunkModel(BaseDataModel):
         if record is None:
             return None
         return DataChunk(**record)
+
+    async def batch_insert_chunks(
+        self, chunks: list[DataChunk], batch_size: int = 64
+    ) -> int:
+        num_chunks = len(chunks)
+        # implement batch operations
+        for i in range(0, num_chunks, batch_size):
+            batch_chunks = chunks[i : i + batch_size]
+            # create operations
+            batch_operations = [InsertOne(chunk.model_dump()) for chunk in batch_chunks]
+            await self.db_collection.bulk_write(batch_operations)
+        return num_chunks
