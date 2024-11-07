@@ -28,3 +28,15 @@ class ProjectModel(BaseDataModel):
         else:
             project._id = record._id
         return project
+
+    async def get_all_project(
+        self, page_index: int = 0, page_size: int = 10
+    ) -> tuple[list[Project], int]:
+        num_records = await self.db_collection.count_documents({})
+        num_pages = num_records // page_size
+        num_pages += 1 if num_records % page_size else 0
+        cursor = self.db_collection.find().skip(page_index * page_size).limit(page_size)
+        projects = []
+        async for record in cursor:
+            projects.append(Project(**record))
+        return projects, num_pages
