@@ -12,5 +12,16 @@ class DataChunk(BaseModel):
     chunk_index: int = Field(ge=0)
     chunk_project_id: ObjectId
 
+    @classmethod
+    async def get_indexes(cls) -> list[dict]:
+        indexes = [
+            {
+                "key": [("chunk_project_id", 1)],
+                "name": "chunk_project_id_index_1",
+                "unique": False,
+            }
+        ]
+        return indexes
+
     class Config:
         arbitrary_types_allowed = True
