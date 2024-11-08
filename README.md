@@ -47,6 +47,29 @@ conda activate mini-rag
 cp .env.example .env
 ```
 
+- Configure **Docker** setups to run **MongoDB** container.
+
+  - Install `docker`. [details for linux to be added later]
+  - Add your `user` to `docker` group.
+
+  ```bash
+  user@DEVICE:~$ usermod -aG docker user
+  ```
+
+  - Fill [.env.example](./docker/.env.example) file using desired `mongodb` credentials and save it into a `.env` file.
+
+  ```bash
+  cp ../docker/.env.example ../docker/.env
+  ```
+
+  - Compose the docker services. You may need to use `sudo` if it is the first time.
+
+  ```bash
+  docker compose up -d
+  ```
+
+  - You may need to reset the `mongodb` container while development. [details to be added later]
+
 - Run the `FastAPI` server. Use the `--reload` argument only for development. A **Postman** collection is available in the [assets](./assets/mini-rag-app.postman_collection.json) directory for your help.
 
 ```bash

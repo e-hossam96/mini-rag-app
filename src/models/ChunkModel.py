@@ -12,7 +12,23 @@ from pymongo import InsertOne
 class ChunkModel(BaseDataModel):
     def __init__(self, db_client: AsyncIOMotorDatabase) -> None:
         super().__init__(db_client)
-        self.db_collection = self.db_client[DatabaseConfig.CHUNK_COLLECTION_NAME.value]
+        self.collection_name = DatabaseConfig.CHUNK_COLLECTION_NAME.value
+        self.db_collection = self.db_client[self.collection_name]
+
+    async def init_collection(self) -> None:
+        collection_names = await self.db_client.list_collection_names()
+        if self.collection_name not in collection_names:
+            indexes = DataChunk.get_indexes()
+            for index in indexes:
+                await self.db_collection.create_index(**index)
+
+    @classmethod
+    async def create_instance(
+        cls, db_client: AsyncIOMotorDatabase
+    ) -> AsyncIOMotorDatabase:
+        instance = cls(db_client)
+        await instance.init_collection()
+        return instance
 
     async def create_chunk(self, chunk: DataChunk) -> DataChunk:
         chunk_db_id = await self.db_collection.insert_one(chunk.model_dump())

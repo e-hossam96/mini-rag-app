@@ -16,5 +16,16 @@ class Project(BaseModel):
             raise ValueError("{project_id} must be Alpha Numeric")
         return value
 
+    @classmethod
+    def get_indexes(cls) -> list[dict]:
+        indexes = [
+            {
+                "keys": [("project_id", 1)],
+                "name": "project_id_index_1",
+                "unique": True,
+            }
+        ]
+        return indexes
+
     class Config:
         arbitrary_types_allowed = True
