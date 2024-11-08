@@ -20,7 +20,7 @@ class Project(BaseModel):
     def get_indexes(cls) -> list[dict]:
         indexes = [
             {
-                "key": [("project_id", 1)],
+                "keys": [("project_id", 1)],
                 "name": "project_id_index_1",
                 "unique": True,
             }
