@@ -13,7 +13,7 @@ class DataChunk(BaseModel):
     chunk_project_id: ObjectId
 
     @classmethod
-    async def get_indexes(cls) -> list[dict]:
+    def get_indexes(cls) -> list[dict]:
         indexes = [
             {
                 "key": [("chunk_project_id", 1)],

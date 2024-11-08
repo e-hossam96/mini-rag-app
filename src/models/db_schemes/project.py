@@ -17,7 +17,7 @@ class Project(BaseModel):
         return value
 
     @classmethod
-    async def get_indexes(cls) -> list[dict]:
+    def get_indexes(cls) -> list[dict]:
         indexes = [
             {
                 "key": [("project_id", 1)],
