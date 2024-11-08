@@ -31,7 +31,7 @@ async def upload_data(
         )
         return resp
     # upload file to server
-    project_model = ProjectModel(request.app.db_client)
+    project_model = await ProjectModel.create_instance(request.app.db_client)
     project = await project_model.get_project(project_id=project_id)
     file_path, file_id = data_controller.get_unique_file_path(project_id, file.filename)
     is_written, write_signal = await data_controller.write_uploaded_file(
@@ -68,7 +68,7 @@ async def process_data(
         file_content, process_chunk_size, process_overlap_size
     )
     # get project _id from db
-    project_model = ProjectModel(request.app.db_client)
+    project_model = await ProjectModel.create_instance(request.app.db_client)
     project = await project_model.get_project(project_id=project_id)
     # create data chunk objects
     data_chunks = [
@@ -81,7 +81,7 @@ async def process_data(
         for i, chunk in enumerate(chunks)
     ]
     # write chunks to db using chunk model object
-    chunk_model = ChunkModel(request.app.db_client)
+    chunk_model = await ChunkModel.create_instance(request.app.db_client)
     if process_do_reset:
         _ = await chunk_model.clear_project_chunks(project._id)  # id in db
     num_inserted_chunks = await chunk_model.batch_insert_chunks(data_chunks)
