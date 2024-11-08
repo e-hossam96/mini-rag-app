@@ -9,9 +9,8 @@ from .db_schemes.project import Project
 class ProjectModel(BaseDataModel):
     def __init__(self, db_client: AsyncIOMotorDatabase) -> None:
         super().__init__(db_client)
-        self.db_collection = self.db_client[
-            DatabaseConfig.PROJECT_COLLECTION_NAME.value
-        ]
+        self.collection_name = DatabaseConfig.PROJECT_COLLECTION_NAME.value
+        self.db_collection = self.db_client[self.collection_name]
 
     async def create_project(self, project: Project) -> Project:
         project_db_id = await self.db_collection.insert_one(project.model_dump())
