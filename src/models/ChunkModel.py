@@ -22,6 +22,14 @@ class ChunkModel(BaseDataModel):
             for index in indexes:
                 await self.db_collection.create_index(**index)
 
+    @classmethod
+    async def create_instance(
+        cls, db_client: AsyncIOMotorDatabase
+    ) -> AsyncIOMotorDatabase:
+        instance = cls(db_client)
+        await instance.init_collection()
+        return instance
+
     async def create_chunk(self, chunk: DataChunk) -> DataChunk:
         chunk_db_id = await self.db_collection.insert_one(chunk.model_dump())
         chunk._id = chunk_db_id.inserted_id

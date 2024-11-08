@@ -19,6 +19,14 @@ class ProjectModel(BaseDataModel):
             for index in indexes:
                 await self.db_collection.create_index(**index)
 
+    @classmethod
+    async def create_instance(
+        cls, db_client: AsyncIOMotorDatabase
+    ) -> AsyncIOMotorDatabase:
+        instance = cls(db_client)
+        await instance.init_collection()
+        return instance
+
     async def create_project(self, project: Project) -> Project:
         project_db_id = await self.db_collection.insert_one(project.model_dump())
         project._id = project_db_id.inserted_id
