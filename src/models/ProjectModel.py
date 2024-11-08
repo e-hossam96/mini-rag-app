@@ -12,6 +12,13 @@ class ProjectModel(BaseDataModel):
         self.collection_name = DatabaseConfig.PROJECT_COLLECTION_NAME.value
         self.db_collection = self.db_client[self.collection_name]
 
+    async def init_collection(self) -> None:
+        collection_names = await self.db_client.list_collection_names()
+        if self.collection_name not in collection_names:
+            indexes = Project.get_indexes()
+            for index in indexes:
+                await self.db_collection.create_index(**index)
+
     async def create_project(self, project: Project) -> Project:
         project_db_id = await self.db_collection.insert_one(project.model_dump())
         project._id = project_db_id.inserted_id

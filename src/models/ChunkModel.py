@@ -15,6 +15,13 @@ class ChunkModel(BaseDataModel):
         self.collection_name = DatabaseConfig.CHUNK_COLLECTION_NAME.value
         self.db_collection = self.db_client[self.collection_name]
 
+    async def init_collection(self) -> None:
+        collection_names = await self.db_client.list_collection_names()
+        if self.collection_name not in collection_names:
+            indexes = DataChunk.get_indexes()
+            for index in indexes:
+                await self.db_collection.create_index(**index)
+
     async def create_chunk(self, chunk: DataChunk) -> DataChunk:
         chunk_db_id = await self.db_collection.insert_one(chunk.model_dump())
         chunk._id = chunk_db_id.inserted_id
