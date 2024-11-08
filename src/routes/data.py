@@ -10,7 +10,10 @@ from typing import Union
 from langchain_core.documents.base import Document
 from models.ProjectModel import ProjectModel
 from models.ChunkModel import ChunkModel
+from models.AssetModel import AssetModel
 from models.db_schemes.data_chunk import DataChunk
+from models.db_schemes.asset import Asset
+from models.enums.AssetConfig import AssetConfig
 
 data_router = APIRouter(prefix="/api/v1/data", tags=["api_v1", "data"])
 
@@ -37,9 +40,18 @@ async def upload_data(
     is_written, write_signal = await data_controller.write_uploaded_file(
         file, file_path
     )
+    # store asset into database
+    asset_model = await AssetModel.create_instance(request.app.db_client)
+    asset = Asset(
+        asset_project_id=project._id,
+        asset_type=AssetConfig.FILE_TYPE_NAME.value,
+        asset_name=file_id,
+        asset_size=file_path.stat().st_size,
+    )
+    asset = await asset_model.create_asset(asset)
     resp_content = {"signal": write_signal}
     if is_written:
-        resp_content["file_id"] = file_id
+        resp_content["file_id"] = str(asset._id)
         resp_content["project_id"] = str(project._id)
         resp = JSONResponse(content=resp_content, status_code=status.HTTP_200_OK)
     else:
