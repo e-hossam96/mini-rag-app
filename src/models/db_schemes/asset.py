@@ -15,7 +15,7 @@ class Asset(BaseModel):
     asset_pushed_at: datetime.datetime = Field(
         default=datetime.datetime.now(datetime.timezone.utc)
     )
-    asset_config: dict = Field(default=None)
+    asset_config: Optional[dict] = Field(default=None)
 
     @classmethod
     def get_indexes(cls) -> list[dict]:
