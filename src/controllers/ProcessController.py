@@ -25,10 +25,11 @@ class ProcessController(BaseController):
         file_ext = self.get_file_ext(process_file_id)
         file_path = self.project_path.joinpath(process_file_id)
         file_loader = None
-        if file_ext == ProcessConfig.TXT.value:
-            file_loader = TextLoader(file_path, encoding="utf-8")
-        elif file_ext == ProcessConfig.PDF.value:
-            file_loader = PyMuPDFLoader(str(file_path))
+        if file_path.exists():
+            if file_ext == ProcessConfig.TXT.value:
+                file_loader = TextLoader(file_path, encoding="utf-8")
+            elif file_ext == ProcessConfig.PDF.value:
+                file_loader = PyMuPDFLoader(str(file_path))
         return file_loader
 
     def get_file_content(self, process_file_id: str) -> Union[list[Document], None]:

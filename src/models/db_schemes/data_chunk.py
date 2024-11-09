@@ -11,6 +11,7 @@ class DataChunk(BaseModel):
     chunk_metadata: dict
     chunk_index: int = Field(ge=0)
     chunk_project_id: ObjectId
+    chunk_asset_id: ObjectId
 
     @classmethod
     def get_indexes(cls) -> list[dict]:

@@ -11,3 +11,5 @@ class ResponseSignal(Enum):
     FILE_UPLOAD_SUCCEEDED: str = "File_Upload_Succeeded"
     FILE_PROCESS_SUCCEEDED: str = "File_Processing_Succeeded"
     FILE_PROCESS_FAILED: str = "File_Processing_Failed"
+    NO_FILES_ERROR: str = "No_Files_Found_in_Database"
+    NO_FILE_ERROR: str = "File_Not_Found_in_Database"

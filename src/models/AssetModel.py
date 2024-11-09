@@ -5,6 +5,7 @@ from motor.motor_asyncio import AsyncIOMotorDatabase
 from .enums.DatabaseConfig import DatabaseConfig
 from .db_schemes.asset import Asset
 from bson.objectid import ObjectId
+from typing import Union, Self
 
 
 class AssetModel(BaseDataModel):
@@ -21,9 +22,7 @@ class AssetModel(BaseDataModel):
                 await self.db_collection.create_index(**index)
 
     @classmethod
-    async def create_instance(
-        cls, db_client: AsyncIOMotorDatabase
-    ) -> AsyncIOMotorDatabase:
+    async def create_instance(cls, db_client: AsyncIOMotorDatabase) -> Self:
         instance = cls(db_client)
         await instance.init_collection()
         return instance
@@ -33,8 +32,25 @@ class AssetModel(BaseDataModel):
         asset._id = asset_db_id.inserted_id
         return asset
 
-    async def get_all_project_assets(self, project_id: str) -> list[dict]:
-        records = await self.db_collection.find(
-            {"asset_project_id": ObjectId(project_id)}
-        ).to_list()
-        return records
+    async def get_all_project_assets(
+        self, project_id: str, asset_type: str
+    ) -> list[Asset]:
+        cursor = self.db_collection.find(
+            {"asset_project_id": ObjectId(project_id), "asset_type": asset_type}
+        )
+        assets = []
+        async for record in cursor:
+            asset = Asset(**record)
+            asset._id = record["_id"]
+            assets.append(asset)
+        return assets
+
+    async def get_project_asset(self, project_id: str, asset_name: str) -> Union[Asset, None]:
+        record = await self.db_collection.find_one(
+            {"asset_project_id": ObjectId(project_id), "asset_name": asset_name}
+        )
+        asset = None
+        if record is not None:
+            asset = Asset(**record)
+            asset._id = record["_id"]
+        return asset
