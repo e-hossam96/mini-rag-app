@@ -37,7 +37,9 @@ class ChunkModel(BaseDataModel):
         record = await self.db_collection.find_one({"_id": ObjectId(chunk_id)})
         if record is None:
             return None
-        return DataChunk(**record)
+        chunk = DataChunk(**record)
+        chunk._id = record["_id"]
+        return chunk
 
     async def batch_insert_chunks(
         self, chunks: list[DataChunk], batch_size: int = 64

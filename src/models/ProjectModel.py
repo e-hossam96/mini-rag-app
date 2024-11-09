@@ -51,5 +51,7 @@ class ProjectModel(BaseDataModel):
         cursor = self.db_collection.find().skip(page_index * page_size).limit(page_size)
         projects = []
         async for record in cursor:
-            projects.append(Project(**record))
+            project = Project(**record)
+            project._id = record["_id"]
+            projects.append()
         return projects, num_pages
