@@ -40,3 +40,10 @@ class AssetModel(BaseDataModel):
         ).to_list()
         assets = [Asset(**record) for record in records]
         return assets
+
+    async def get_project_asset(self, project_id: str, asset_name: str) -> Asset:
+        record = await self.db_collection.find_one(
+            {"asset_project_id": ObjectId(project_id), "asset_name": asset_name}
+        )
+        asset = Asset(**record)
+        return asset
