@@ -5,6 +5,7 @@ from motor.motor_asyncio import AsyncIOMotorDatabase
 from .enums.DatabaseConfig import DatabaseConfig
 from .db_schemes.asset import Asset
 from bson.objectid import ObjectId
+from typing import Self
 
 
 class AssetModel(BaseDataModel):
@@ -21,9 +22,7 @@ class AssetModel(BaseDataModel):
                 await self.db_collection.create_index(**index)
 
     @classmethod
-    async def create_instance(
-        cls, db_client: AsyncIOMotorDatabase
-    ) -> AsyncIOMotorDatabase:
+    async def create_instance(cls, db_client: AsyncIOMotorDatabase) -> Self:
         instance = cls(db_client)
         await instance.init_collection()
         return instance

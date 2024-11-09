@@ -4,7 +4,7 @@ from .BaseDataModel import BaseDataModel
 from motor.motor_asyncio import AsyncIOMotorDatabase
 from .enums.DatabaseConfig import DatabaseConfig
 from .db_schemes.data_chunk import DataChunk
-from typing import Union
+from typing import Union, Self
 from bson.objectid import ObjectId
 from pymongo import InsertOne
 
@@ -23,9 +23,7 @@ class ChunkModel(BaseDataModel):
                 await self.db_collection.create_index(**index)
 
     @classmethod
-    async def create_instance(
-        cls, db_client: AsyncIOMotorDatabase
-    ) -> AsyncIOMotorDatabase:
+    async def create_instance(cls, db_client: AsyncIOMotorDatabase) -> Self:
         instance = cls(db_client)
         await instance.init_collection()
         return instance

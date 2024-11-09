@@ -4,6 +4,7 @@ from .BaseDataModel import BaseDataModel
 from motor.motor_asyncio import AsyncIOMotorDatabase
 from .enums.DatabaseConfig import DatabaseConfig
 from .db_schemes.project import Project
+from typing import Self
 
 
 class ProjectModel(BaseDataModel):
@@ -20,9 +21,7 @@ class ProjectModel(BaseDataModel):
                 await self.db_collection.create_index(**index)
 
     @classmethod
-    async def create_instance(
-        cls, db_client: AsyncIOMotorDatabase
-    ) -> AsyncIOMotorDatabase:
+    async def create_instance(cls, db_client: AsyncIOMotorDatabase) -> Self:
         instance = cls(db_client)
         await instance.init_collection()
         return instance
