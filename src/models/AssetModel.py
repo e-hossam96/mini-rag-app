@@ -33,8 +33,9 @@ class AssetModel(BaseDataModel):
         asset._id = asset_db_id.inserted_id
         return asset
 
-    async def get_all_project_assets(self, project_id: str) -> list[dict]:
+    async def get_all_project_assets(self, project_id: str) -> list[Asset]:
         records = await self.db_collection.find(
             {"asset_project_id": ObjectId(project_id)}
         ).to_list()
-        return records
+        assets = [Asset(**record) for record in records]
+        return assets
