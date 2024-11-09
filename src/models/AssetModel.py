@@ -35,7 +35,7 @@ class AssetModel(BaseDataModel):
     async def get_all_project_assets(
         self, project_id: str, asset_type: str
     ) -> list[Asset]:
-        cursor = await self.db_collection.find(
+        cursor = self.db_collection.find(
             {"asset_project_id": ObjectId(project_id), "asset_type": asset_type}
         )
         assets = []
