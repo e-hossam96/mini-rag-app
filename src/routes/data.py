@@ -52,7 +52,8 @@ async def upload_data(
     asset = await asset_model.create_asset(asset)
     resp_content = {"signal": write_signal}
     if is_written:
-        resp_content["file_id"] = str(asset._id)
+        resp_content["file_id"] = file_id
+        resp_content["asset_id"] = str(asset._id)
         resp_content["project_id"] = str(project._id)
         resp = JSONResponse(content=resp_content, status_code=status.HTTP_200_OK)
     else:
@@ -78,19 +79,19 @@ async def process_data(
     chunk_model = await ChunkModel.create_instance(request.app.db_client)
     asset_model = await AssetModel.create_instance(request.app.db_client)
 
-    # get file ids/names
-    process_file_ids = []
+    # get file assets
+    assets = []
     if process_file_id is None:
         # get all project asset file ids/names (files only now)
         project_assets = await asset_model.get_all_project_assets(
-            project._id, AssetConfig.FILE_TYPE_NAME.value
+            str(project._id), AssetConfig.FILE_TYPE_NAME.value
         )
-        asset_ids = [asset.asset_name for asset in project_assets]
-        process_file_ids.extend(asset_ids)
+        assets.extend(project_assets)
     else:
-        process_file_ids.append(process_file_id)
+        asset = await asset_model.get_project_asset(str(project._id), process_file_id)
+        assets.append(asset)
 
-    if not process_file_ids:
+    if not assets:
         return JSONResponse(
             content={"signal": ResponseSignal.NO_FILES_ERROR.value},
             status_code=status.HTTP_400_BAD_REQUEST,
@@ -102,15 +103,15 @@ async def process_data(
     num_chunks = 0
     num_files = 0
     # loop over all file ids/names and process them
-    for process_file_id in process_file_ids:
-        logging.info(f"Processing file: {process_file_id}")
-        file_content = process_controller.get_file_content(process_file_id)
+    for asset in assets:
+        logging.debug(f"Processing file: {asset.asset_name}")
+        file_content = process_controller.get_file_content(asset.asset_name)
         if file_content is None:
             # return JSONResponse(
             #     content={"signal": ResponseSignal.FILE_PROCESS_FAILED.value},
             #     status_code=status.HTTP_400_BAD_REQUEST,
             # )
-            logging.error(f"File missing or empty content for file: {process_file_id}")
+            logging.error(f"File missing or empty content for file: {asset.asset_name}")
             continue
         chunks = process_controller.process_file_content(
             file_content, process_chunk_size, process_overlap_size
@@ -122,6 +123,7 @@ async def process_data(
                 chunk_metadata=chunk.metadata,
                 chunk_index=i,
                 chunk_project_id=project._id,
+                chunk_asset_id=asset._id,
             )
             for i, chunk in enumerate(chunks)
         ]
