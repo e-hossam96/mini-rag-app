@@ -89,6 +89,11 @@ async def process_data(
         assets.extend(project_assets)
     else:
         asset = await asset_model.get_project_asset(str(project._id), process_file_id)
+        if asset is None:
+            return JSONResponse(
+                content={"signal": ResponseSignal.NO_FILE_ERROR.value},
+                status_code=status.HTTP_400_BAD_REQUEST,
+            )
         assets.append(asset)
 
     if not assets:
