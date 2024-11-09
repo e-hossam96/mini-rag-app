@@ -5,7 +5,7 @@ from motor.motor_asyncio import AsyncIOMotorDatabase
 from .enums.DatabaseConfig import DatabaseConfig
 from .db_schemes.asset import Asset
 from bson.objectid import ObjectId
-from typing import Self
+from typing import Union, Self
 
 
 class AssetModel(BaseDataModel):
@@ -45,10 +45,12 @@ class AssetModel(BaseDataModel):
             assets.append(asset)
         return assets
 
-    async def get_project_asset(self, project_id: str, asset_name: str) -> Asset:
+    async def get_project_asset(self, project_id: str, asset_name: str) -> Union[Asset, None]:
         record = await self.db_collection.find_one(
             {"asset_project_id": ObjectId(project_id), "asset_name": asset_name}
         )
-        asset = Asset(**record)
-        asset._id = record["_id"]
+        asset = None
+        if record is not None:
+            asset = Asset(**record)
+            asset._id = record["_id"]
         return asset
