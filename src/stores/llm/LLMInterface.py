@@ -24,7 +24,7 @@ class LLMInterface(ABC):
         pass
 
     @abstractmethod
-    def embed_text(self, text: str, doc_type: str = None):
+    def embed_text(self, text: str, doc_type: str = None) -> Union[list[float], None]:
         pass
 
     @abstractmethod
