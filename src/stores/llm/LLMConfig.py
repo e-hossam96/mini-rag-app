@@ -12,3 +12,9 @@ class OpenAIConfig(Enum):
     SYSTEM: str = "system"
     USER: str = "user"
     AI_AGENT: str = "assistant"
+
+
+class CoHereConfig(Enum):
+    SYSTEM: str = "system"
+    USER: str = "user"
+    AI_AGENT: str = "assistant"
