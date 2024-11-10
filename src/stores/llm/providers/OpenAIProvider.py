@@ -83,3 +83,23 @@ class OpenAIProvider(LLMInterface):
             self.logger.error(f"{LLMConfig.OPENAI.value} response generation failed.")
             return None
         return resp.choices[0].message.content
+
+    def embed_text(self, text: str, doc_type: str = None) -> Union[list[float], None]:
+        # ensure client and model id are set
+        if self.client is None:
+            self.logger.error(f"{LLMConfig.OPENAI.value} was not set.")
+            return None
+        if self.embedding_model_id is None:
+            self.logger.error(f"{LLMConfig.OPENAI.value} embedding model id not set.")
+            return None
+        # send text to embedding endpoint
+        resp = self.client.embeddings.create(model=self.embedding_model_id, input=text)
+        if (
+            resp is None
+            or resp.data is None
+            or len(resp.data) == 0
+            or resp.data[0].embedding is None
+        ):
+            self.logger.error(f"{LLMConfig.OPENAI.value} embedding response failed.")
+            return None
+        return resp.data[0].embedding
