@@ -55,11 +55,11 @@ class CoHereProvider(LLMInterface):
     ) -> Union[str, None]:
         # ensure client and model id are set
         if self.client is None:
-            self.logger.error(f"{LLMConfig.OPENAI.value} was not set.")
+            self.logger.error(f"{LLMConfig.COHERE.value} was not set.")
             return None
         if self.generation_model_id is None:
             self.logger.error(
-                f"{LLMConfig.OPENAI.value} generation model id was not set."
+                f"{LLMConfig.COHERE.value} generation model id was not set."
             )
             return None
         # ensure generation parameters are set
@@ -82,6 +82,6 @@ class CoHereProvider(LLMInterface):
             or resp.message.content is None
             or len(resp.message.content) == 0
         ):
-            self.logger.error(f"{LLMConfig.OPENAI.value} generation response failed.")
+            self.logger.error(f"{LLMConfig.COHERE.value} generation response failed.")
             return None
         return resp.message.content[0].text
