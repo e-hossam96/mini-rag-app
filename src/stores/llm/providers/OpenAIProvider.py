@@ -27,3 +27,10 @@ class OpenAIProvider(LLMInterface):
         # define client
         self.client = OpenAI(api_key=self.api_key, base_url=self.base_url)
         self.logger = logging.getLogger(__name__)
+
+    def set_generation_model(self, generation_model_id: str) -> None:
+        self.generation_model_id = generation_model_id
+
+    def set_embedding_model(self, embedding_model_id: str, embedding_size: int) -> None:
+        self.embedding_model_id = embedding_model_id
+        self.embedding_size = embedding_size
