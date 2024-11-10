@@ -3,7 +3,7 @@
 import logging
 import cohere
 from typing import Union
-from ..LLMConfig import LLMConfig, CoHereConfig
+from ..LLMConfig import LLMConfig, CoHereV2Config, DocTypeConfig
 from ..LLMInterface import LLMInterface
 
 
@@ -45,3 +45,43 @@ class CoHereProvider(LLMInterface):
 
     def construct_prompt(self, prompt: str, role: str) -> dict:
         return {"role": role, "content": self.process_prompt(prompt)}
+
+    def generate_text(
+        self,
+        prompt: str,
+        chat_history: list = [],
+        max_output_tokens: int = None,
+        temperature: float = None,
+    ) -> Union[str, None]:
+        # ensure client and model id are set
+        if self.client is None:
+            self.logger.error(f"{LLMConfig.OPENAI.value} was not set.")
+            return None
+        if self.generation_model_id is None:
+            self.logger.error(
+                f"{LLMConfig.OPENAI.value} generation model id was not set."
+            )
+            return None
+        # ensure generation parameters are set
+        if max_output_tokens is None:
+            max_output_tokens = self.max_output_tokens
+        if temperature is None:
+            temperature = self.temperature
+        # send prompt to chat endpoint
+        chat_history.append(self.construct_prompt(prompt, CoHereV2Config.USER.value))
+        resp = self.client.chat(
+            model=self.generation_model_id,
+            messages=chat_history,
+            max_tokens=max_output_tokens,
+            temperature=temperature,
+        )
+        # validate response
+        if (
+            resp is None
+            or resp.message is None
+            or resp.message.content is None
+            or len(resp.message.content) == 0
+        ):
+            self.logger.error(f"{LLMConfig.OPENAI.value} generation response failed.")
+            return None
+        return resp.message.content[0].text
