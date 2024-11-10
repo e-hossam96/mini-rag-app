@@ -58,7 +58,9 @@ class OpenAIProvider(LLMInterface):
             self.logger.error(f"{LLMConfig.OPENAI.value} was not set.")
             return None
         if self.generation_model_id is None:
-            self.logger.error(f"{LLMConfig.OPENAI.value} generation model id not set.")
+            self.logger.error(
+                f"{LLMConfig.OPENAI.value} generation model id was not set."
+            )
             return None
         # ensure generation parameters are set
         if max_output_tokens is None:
@@ -80,7 +82,7 @@ class OpenAIProvider(LLMInterface):
             or len(resp.choices) == 0
             or resp.choices[0].message is None
         ):
-            self.logger.error(f"{LLMConfig.OPENAI.value} response generation failed.")
+            self.logger.error(f"{LLMConfig.OPENAI.value} generation response failed.")
             return None
         return resp.choices[0].message.content
 
@@ -90,7 +92,9 @@ class OpenAIProvider(LLMInterface):
             self.logger.error(f"{LLMConfig.OPENAI.value} was not set.")
             return None
         if self.embedding_model_id is None:
-            self.logger.error(f"{LLMConfig.OPENAI.value} embedding model id not set.")
+            self.logger.error(
+                f"{LLMConfig.OPENAI.value} embedding model id was not set."
+            )
             return None
         # send text to embedding endpoint
         resp = self.client.embeddings.create(model=self.embedding_model_id, input=text)
