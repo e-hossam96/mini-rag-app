@@ -1,5 +1,6 @@
 """Implementing the LLM Interface class."""
 
+from typing import Union
 from abc import ABC, abstractmethod
 
 
@@ -19,7 +20,7 @@ class LLMInterface(ABC):
         chat_history: list = [],
         max_output_tokens: int = None,
         temperature: float = None,
-    ):
+    ) -> Union[str, None]:
         pass
 
     @abstractmethod
