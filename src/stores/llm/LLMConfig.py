@@ -18,6 +18,8 @@ class CoHereV2Config(Enum):
     SYSTEM: str = "system"
     USER: str = "user"
     AI_AGENT: str = "assistant"
+    DOC: str = "search_document"
+    QUERY: str = "search_query"
 
 
 class DocTypeConfig(Enum):
