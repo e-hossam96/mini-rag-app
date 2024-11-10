@@ -42,3 +42,6 @@ class CoHereProvider(LLMInterface):
             self.logger.warning("Prompt is longer than expected.")
             prompt = prompt[: self.max_input_characters].strip()
         return prompt
+
+    def construct_prompt(self, prompt: str, role: str) -> dict:
+        return {"role": role, "content": self.process_prompt(prompt)}
