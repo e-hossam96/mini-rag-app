@@ -2,6 +2,8 @@
 
 import logging
 from openai import OpenAI
+from typing import Union
+from ..LLMConfig import LLMConfig, OpenAIConfig
 from ..LLMInterface import LLMInterface
 
 
@@ -34,3 +36,50 @@ class OpenAIProvider(LLMInterface):
     def set_embedding_model(self, embedding_model_id: str, embedding_size: int) -> None:
         self.embedding_model_id = embedding_model_id
         self.embedding_size = embedding_size
+
+    def process_prompt(self, prompt: str) -> str:
+        if len(prompt) > self.max_input_characters:
+            self.logger.warning("Prompt is longer than expected.")
+            prompt = prompt[: self.max_input_characters]
+        return prompt
+
+    def construct_prompt(self, prompt: str, role: str) -> dict:
+        return {"role": role, "content": self.process_prompt(prompt)}
+
+    def generate_text(
+        self,
+        prompt: str,
+        chat_history: list = [],
+        max_output_tokens: int = None,
+        temperature: float = None,
+    ) -> Union[str, None]:
+        # ensure client and model id are set
+        if self.client is None:
+            self.logger.error(f"{LLMConfig.OPENAI.value} was not set.")
+            return None
+        if self.generation_model_id is None:
+            self.logger.error(f"{LLMConfig.OPENAI.value} generation model id not set.")
+            return None
+        # ensure generation parameters are set
+        if max_output_tokens is None:
+            max_output_tokens = self.max_output_tokens
+        if temperature is None:
+            temperature = self.temperature
+        # send prompt to chat endpoint
+        chat_history.append(self.construct_prompt(prompt, OpenAIConfig.USER.value))
+        resp = self.client.chat.completions.create(
+            model=self.generation_model_id,
+            messages=chat_history,
+            max_completion_tokens=max_output_tokens,
+            temperature=temperature,
+        )
+        # validate response
+        if (
+            resp is None
+            or resp.choices is None
+            or len(resp.choices) == 0
+            or resp.choices[0].message is None
+        ):
+            self.logger.error(f"{LLMConfig.OPENAI.value} response generation failed.")
+            return None
+        return resp.choices[0].message.content
