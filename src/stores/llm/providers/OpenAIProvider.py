@@ -40,7 +40,7 @@ class OpenAIProvider(LLMInterface):
     def process_prompt(self, prompt: str) -> str:
         if len(prompt) > self.max_input_characters:
             self.logger.warning("Prompt is longer than expected.")
-            prompt = prompt[: self.max_input_characters]
+            prompt = prompt[: self.max_input_characters].strip()
         return prompt
 
     def construct_prompt(self, prompt: str, role: str) -> dict:
