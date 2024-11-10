@@ -97,7 +97,9 @@ class OpenAIProvider(LLMInterface):
             )
             return None
         # send text to embedding endpoint
-        resp = self.client.embeddings.create(model=self.embedding_model_id, input=text)
+        resp = self.client.embeddings.create(
+            model=self.embedding_model_id, input=self.process_prompt(text)
+        )
         if (
             resp is None
             or resp.data is None

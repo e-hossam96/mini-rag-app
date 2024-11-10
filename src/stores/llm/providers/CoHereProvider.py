@@ -108,7 +108,7 @@ class CoHereProvider(LLMInterface):
             return None
         resp = self.client.embed(
             model=self.embedding_model_id,
-            texts=[text],
+            texts=[self.process_prompt(text)],
             input_type=doc_type,
             embedding_types=["float"],
         )
