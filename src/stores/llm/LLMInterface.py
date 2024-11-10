@@ -14,14 +14,18 @@ class LLMInterface(ABC):
 
     @abstractmethod
     def generate_text(
-        self, messages: list[dict], max_output_tokens: int, temperature: float = None
+        self,
+        prompt: str,
+        chat_history: list = [],
+        max_output_tokens: int = None,
+        temperature: float = None,
     ):
         pass
 
     @abstractmethod
-    def embed_text(self, text: str, doc_type: str):
+    def embed_text(self, text: str, doc_type: str = None):
         pass
 
     @abstractmethod
-    def construct_prompt(self, prompt: str, role: str) -> list[dict]:
+    def construct_prompt(self, prompt: str, role: str) -> dict:
         pass
