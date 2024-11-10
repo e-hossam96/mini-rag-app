@@ -85,3 +85,39 @@ class CoHereProvider(LLMInterface):
             self.logger.error(f"{LLMConfig.COHERE.value} generation response failed.")
             return None
         return resp.message.content[0].text
+
+    def embed_text(self, text: str, doc_type: str = None) -> Union[list[float], None]:
+        # ensure client and model id are set
+        if self.client is None:
+            self.logger.error(f"{LLMConfig.COHERE.value} was not set.")
+            return None
+        if self.embedding_model_id is None:
+            self.logger.error(
+                f"{LLMConfig.COHERE.value} embedding model id was not set."
+            )
+            return None
+        # send text to embedding endpoint
+        if doc_type is None or doc_type == DocTypeConfig.DOC.value:
+            # set default to document
+            doc_type = CoHereV2Config.DOC.value
+        elif doc_type == DocTypeConfig.QUERY.value:
+            doc_type = CoHereV2Config.QUERY.value
+        else:
+            # handle the case when input type is unknown
+            self.logger.error(f"{LLMConfig.COHERE.value} unknown input type.")
+            return None
+        resp = self.client.embed(
+            model=self.embedding_model_id,
+            texts=[text],
+            input_type=doc_type,
+            embedding_types=["float"],
+        )
+        if (
+            resp is None
+            or resp.embeddings is None
+            or resp.embeddings.float_ is None
+            or len(resp.embeddings.float_) == 0
+        ):
+            self.logger.error(f"{LLMConfig.COHERE.value} embedding response failed.")
+            return None
+        return resp.embeddings.float_[0]
