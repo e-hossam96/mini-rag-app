@@ -36,7 +36,7 @@ def connect_llm_providers(app: FastAPI, app_settinigs: Settings) -> FastAPI:
 
 
 @asynccontextmanager
-async def connect_mongo_lifespan(app: FastAPI):
+async def connect_lifespan_clients(app: FastAPI):
     app_settinigs = get_settings()
     app = connect_mongo(app, app_settinigs)
     app = connect_llm_providers(app, app_settinigs)
@@ -44,7 +44,7 @@ async def connect_mongo_lifespan(app: FastAPI):
     app.db_connection.close()
 
 
-app = FastAPI(lifespan=connect_mongo_lifespan)
+app = FastAPI(lifespan=connect_lifespan_clients)
 
 
 app.include_router(base.base_router)
