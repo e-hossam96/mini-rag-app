@@ -36,3 +36,9 @@ class CoHereProvider(LLMInterface):
     def set_embedding_model(self, embedding_model_id: str, embedding_size: int) -> None:
         self.embedding_model_id = embedding_model_id
         self.embedding_size = embedding_size
+
+    def process_prompt(self, prompt: str) -> str:
+        if len(prompt) > self.max_input_characters:
+            self.logger.warning("Prompt is longer than expected.")
+            prompt = prompt[: self.max_input_characters].strip()
+        return prompt
