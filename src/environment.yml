@@ -25,4 +25,4 @@ dependencies:
       - motor==3.6.0
       - openai==1.54.3
       - cohere==5.11.3
-      - qdrant-client==1.12.3
+      - qdrant-client==1.12.1
