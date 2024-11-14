@@ -2,7 +2,7 @@
 
 import pathlib
 import logging
-from qdrant_client import models
+from qdrant_client import QdrantClient, models
 from ..VectorDBConfig import DistanceMethodConfig
 from ..VectorDBInterface import VectorDBInterface
 
@@ -18,3 +18,11 @@ class QdrantDBProvider(VectorDBInterface):
         elif distance_method == DistanceMethodConfig.DOT.value:
             self.distance_method = models.Distance.DOT
         self.logger = logging.getLogger(__file__)
+
+    def connect(self) -> bool:
+        self.client = QdrantClient(path=str(self.db_path))
+        return self.client is not None
+
+    def disconnect(self) -> bool:
+        self.client = None
+        return self.client is None
