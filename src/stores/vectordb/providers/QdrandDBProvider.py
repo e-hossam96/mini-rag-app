@@ -96,6 +96,8 @@ class QdrantDBProvider(VectorDBInterface):
                 payload=[models.Payload(m) for m in metadata],
                 batch_size=batch_size,
             )
+            result = True
+        return result
 
     def search_by_vector(
         self, collection_name: str, vector: list[float], limit: int = 10
