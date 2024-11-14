@@ -12,13 +12,18 @@ class QdrantDBProvider(VectorDBInterface):
     def __init__(self, db_path: pathlib.Path, distance_method: str) -> None:
         self.client = None
         self.db_path = db_path
+        self.logger = logging.getLogger(__file__)
         # define distance metric
         # only support cosine and dot
         if distance_method == DistanceMethodConfig.COSINE.value:
             self.distance_method = models.Distance.COSINE
         elif distance_method == DistanceMethodConfig.DOT.value:
             self.distance_method = models.Distance.DOT
-        self.logger = logging.getLogger(__file__)
+        else:
+            self.logger.error(
+                f"Unknown distance metric {distance_method}. Setting to consie."
+            )
+            self.distance_method = models.Distance.COSINE
 
     def connect(self) -> bool:
         self.client = QdrantClient(path=str(self.db_path))
