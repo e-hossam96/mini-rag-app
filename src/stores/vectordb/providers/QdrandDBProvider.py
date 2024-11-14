@@ -79,3 +79,20 @@ class QdrantDBProvider(VectorDBInterface):
             )
             result = True
         return result
+
+    def inset_many(
+        self,
+        collection_name: str,
+        vectors: list[list[float]],
+        metadata: list[dict],
+        record_ids: Optional[list[str]] = None,
+        batch_size: int = 64,
+    ) -> bool:
+        result = False
+        if self.is_collection(collection_name):
+            self.client.upload_collection(
+                collection_name=collection_name,
+                vectors=vectors,
+                payload=[models.Payload(m) for m in metadata],
+                batch_size=batch_size,
+            )
