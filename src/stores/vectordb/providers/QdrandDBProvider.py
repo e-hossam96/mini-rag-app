@@ -41,3 +41,7 @@ class QdrantDBProvider(VectorDBInterface):
                 collection_name=collection_name
             )
         return collection_info
+
+    def delete_collection(self, collection_name: str) -> bool:
+        # I assume this method does the validation internally
+        return self.client.delete_collection(collection_name=collection_name)
