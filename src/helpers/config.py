@@ -32,6 +32,9 @@ class Settings(BaseSettings):
     MAX_OUTPUT_TOKENS: int = None
     TEMPERATURE: float = None
 
+    VECTORDB_BACKEND: str
+    VECTORDB_DISTANCE: str = None
+
     class Config:
         env_file = ".env"
 
