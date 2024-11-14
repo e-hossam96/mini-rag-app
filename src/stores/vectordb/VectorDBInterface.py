@@ -59,5 +59,5 @@ class VectorDBInterface(ABC):
     @abstractmethod
     def search_by_vector(
         self, collection_name: str, vector: list[float], limit: int = 10
-    ):
+    ) -> Union[list, None]:
         pass
