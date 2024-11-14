@@ -45,3 +45,18 @@ class QdrantDBProvider(VectorDBInterface):
     def delete_collection(self, collection_name: str) -> bool:
         # I assume this method does the validation internally
         return self.client.delete_collection(collection_name=collection_name)
+
+    def create_collection(
+        self, collection_name: str, embedding_size: int, do_reset: bool = False
+    ) -> bool:
+        result = False
+        if do_reset:
+            _ = self.delete_collection(collection_name)
+        if not self.is_collection(collection_name):
+            result = self.client.create_collection(
+                collection_name=collection_name,
+                vectors_config=models.VectorParams(
+                    size=embedding_size, distance=self.distance_method
+                ),
+            )
+        return result
