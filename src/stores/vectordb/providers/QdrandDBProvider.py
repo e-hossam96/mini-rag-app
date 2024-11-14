@@ -99,7 +99,7 @@ class QdrantDBProvider(VectorDBInterface):
 
     def search_by_vector(
         self, collection_name: str, vector: list[float], limit: int = 10
-    ):
+    ) -> Union[list, None]:
         result = None
         if self.is_collection(collection_name):
             result = self.client.search(
