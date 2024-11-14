@@ -2,7 +2,7 @@
 
 import pathlib
 import logging
-from typing import Union
+from typing import Union, Optional
 from qdrant_client import QdrantClient, models
 from ..VectorDBConfig import DistanceMethodConfig
 from ..VectorDBInterface import VectorDBInterface
@@ -59,4 +59,23 @@ class QdrantDBProvider(VectorDBInterface):
                     size=embedding_size, distance=self.distance_method
                 ),
             )
+        return result
+
+    def insert_one(
+        self,
+        collection_name: str,
+        vector: list[float],
+        metadata: dict,
+        record_id: Optional[str] = None,
+    ) -> bool:
+        result = False
+        if self.is_collection(collection_name):
+            # metadata is a dict that has the text and other values
+            self.client.upsert(
+                collection_name=collection_name,
+                points=[
+                    models.PointStruct(vector=vector, payload=models.Payload(metadata))
+                ],
+            )
+            result = True
         return result
