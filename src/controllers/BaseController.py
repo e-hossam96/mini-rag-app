@@ -15,6 +15,9 @@ class BaseController:
         self.files_dir_path = self.base_dir_path.joinpath(
             pathlib.Path("assets").joinpath("files")
         )
+        self.vectordb_dir_path = self.base_dir_path.joinpath(
+            pathlib.Path("assets").joinpath("vectordb")
+        )
 
     def generate_random_string(self, length: int = 12) -> str:
         population = string.ascii_lowercase + string.digits

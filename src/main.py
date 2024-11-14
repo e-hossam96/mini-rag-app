@@ -6,6 +6,7 @@ from helpers.config import get_settings, Settings
 from motor.motor_asyncio import AsyncIOMotorClient
 from contextlib import asynccontextmanager
 from stores.llm.LLMProviderFactory import LLMProviderFactory
+from stores.vectordb.VectorDBProviderFactory import VectorDBProviderFactory
 
 
 def connect_mongo(
@@ -35,11 +36,20 @@ def connect_llm_providers(app: FastAPI, app_settinigs: Settings) -> FastAPI:
     return app
 
 
+def connect_vectordb_providers(app: FastAPI, app_settinigs: Settings) -> FastAPI:
+    vectordb_provider_factory = VectorDBProviderFactory(app_settinigs)
+    app.vectordb_client = vectordb_provider_factory.create_provider(
+        app_settinigs.VECTORDB_BACKEND
+    )
+    return app
+
+
 @asynccontextmanager
 async def connect_lifespan_clients(app: FastAPI):
     app_settinigs = get_settings()
     app = connect_mongo(app, app_settinigs)
     app = connect_llm_providers(app, app_settinigs)
+    app = connect_vectordb_providers(app, app_settinigs)
     yield
     app.db_connection.close()
 
