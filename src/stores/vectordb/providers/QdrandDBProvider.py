@@ -2,6 +2,7 @@
 
 import pathlib
 import logging
+from typing import Union
 from qdrant_client import QdrantClient, models
 from ..VectorDBConfig import DistanceMethodConfig
 from ..VectorDBInterface import VectorDBInterface
@@ -26,3 +27,17 @@ class QdrantDBProvider(VectorDBInterface):
     def disconnect(self) -> bool:
         self.client = None
         return self.client is None
+
+    def is_collection(self, collection_name: str) -> bool:
+        return self.client.collection_exists(collection_name=collection_name)
+
+    def list_all_collections(self) -> list:
+        return self.client.get_collections()
+
+    def get_collection_info(self, collection_name: str) -> Union[dict, None]:
+        collection_info = None
+        if self.is_collection(collection_name):
+            collection_info = self.client.get_collection(
+                collection_name=collection_name
+            )
+        return collection_info
