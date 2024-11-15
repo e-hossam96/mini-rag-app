@@ -2,9 +2,9 @@
 
 from typing import Union
 from .LLMConfig import LLMConfig
-from ...helpers.config import Settings
-from providers.CoHereProvider import CoHereProvider
-from providers.OpenAIProvider import OpenAIProvider
+from helpers.config import Settings
+from .providers.CoHereProvider import CoHereProvider
+from .providers.OpenAIProvider import OpenAIProvider
 
 
 class LLMProviderFactory:

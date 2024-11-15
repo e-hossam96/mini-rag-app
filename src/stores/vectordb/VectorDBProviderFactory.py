@@ -3,8 +3,8 @@
 from typing import Union
 from .VectorDBConfig import VectorDBConfig
 from .providers.QdrandDBProvider import QdrantDBProvider
-from ...helpers.config import Settings
-from ...controllers.VectorDBController import VectorDBController
+from helpers.config import Settings
+from controllers.VectorDBController import VectorDBController
 
 
 class VectorDBProviderFactory:

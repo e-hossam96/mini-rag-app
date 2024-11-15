@@ -41,6 +41,8 @@ def connect_vectordb_providers(app: FastAPI, app_settinigs: Settings) -> FastAPI
     app.vectordb_client = vectordb_provider_factory.create_provider(
         app_settinigs.VECTORDB_BACKEND
     )
+    # connect to vector db
+    _ = app.vectordb_client.connect()
     return app
 
 
@@ -52,6 +54,7 @@ async def connect_lifespan_clients(app: FastAPI):
     app = connect_vectordb_providers(app, app_settinigs)
     yield
     app.db_connection.close()
+    app.vectordb_client.disconnect()
 
 
 app = FastAPI(lifespan=connect_lifespan_clients)
