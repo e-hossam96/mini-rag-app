@@ -1,5 +1,6 @@
 """Implementation of Vector DB Controller class."""
 
+import json
 import pathlib
 from .BaseController import BaseController
 from fastapi import FastAPI
@@ -7,6 +8,7 @@ from helpers.config import Settings
 from models.db_schemes.VectorDBDoc import VectorDBDoc
 from models.db_schemes.DataChunk import DataChunk
 from stores.llm.LLMConfig import DocTypeConfig
+from typing import Union
 
 
 class VectorDBController(BaseController):
@@ -56,3 +58,15 @@ class VectorDBController(BaseController):
             metadata=meta_data,
         )
         return result
+
+    def get_vectordb_collection_info(
+        self, app: FastAPI, collection_name: str
+    ) -> Union[dict, None]:
+        collection_info = app.vectordb_client.get_collection_info(
+            collection_name=collection_name
+        )
+        if collection_info is not None:
+            collection_info = json.loads(
+                json.dumps(collection_info, default=lambda x: x.__dict__)
+            )
+        return collection_info
