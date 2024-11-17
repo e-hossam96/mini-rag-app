@@ -2,11 +2,16 @@
 
 import pathlib
 from .BaseController import BaseController
+from fastapi import FastAPI
+from helpers.config import Settings
 
 
 class VectorDBController(BaseController):
-    def __init__(self) -> None:
+    def __init__(self, app: FastAPI, app_settings: Settings) -> None:
         super().__init__()
+        self.db_client = app.db_client
+        self.embedding_client = app.embedding_client
+        self.vectordb_client = app.vectordb_client
 
     def get_vectordb_path(self, vectordb_name: str) -> pathlib.Path:
         vectordb_path = self.vectordb_dir_path.joinpath(vectordb_name)
