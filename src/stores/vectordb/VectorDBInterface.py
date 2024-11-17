@@ -2,6 +2,7 @@
 
 from typing import Union, Optional
 from abc import ABC, abstractmethod
+from models.db_schemes.VectorDBDoc import VectorDBDoc
 
 
 class VectorDBInterface(ABC):
@@ -59,5 +60,5 @@ class VectorDBInterface(ABC):
     @abstractmethod
     def search_by_vector(
         self, collection_name: str, vector: list[float], limit: int = 10
-    ) -> Union[list, None]:
+    ) -> Union[list[VectorDBDoc], None]:
         pass
