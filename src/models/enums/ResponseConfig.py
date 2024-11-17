@@ -19,3 +19,5 @@ class ResponseConfig(Enum):
     VECTORDB_INDEXING_SUCCEEDED: str = "Indexing_VectorDB_Succeeded"
     VECTORDB_COLLECTION__INFO_RETRIEVED: str = "VectorDB_Collection_Info_Retrieved"
     VECTORDB_COLLECTION__INFO_MISSING: str = "VectorDB_Collection_Info_Missing"
+    VECTORDB_INDEX_SEARCH_SUCCEEDED: str = "VectorDB_Index_Search_Succeeded"
+    VECTORDB_INDEX_SEARCH_FAILED: str = "VectorDB_Index_Search_Failed"
