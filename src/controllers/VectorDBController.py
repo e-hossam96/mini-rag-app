@@ -5,8 +5,8 @@ from .BaseController import BaseController
 from fastapi import FastAPI
 from helpers.config import Settings
 from models.db_schemes.VectorDBDoc import VectorDBDoc
-from models.ChunkDataModel import ChunkDataModel
-from models.ProjectDataModel import ProjectDataModel
+from models.db_schemes.DataChunk import DataChunk
+from stores.llm.LLMConfig import DocTypeConfig
 
 
 class VectorDBController(BaseController):
@@ -15,6 +15,7 @@ class VectorDBController(BaseController):
         self.db_client = app.db_client
         self.embedding_client = app.embedding_client
         self.vectordb_client = app.vectordb_client
+        self.app_settings = app_settings
 
     def get_vectordb_path(self, vectordb_name: str) -> pathlib.Path:
         vectordb_path = self.vectordb_dir_path.joinpath(vectordb_name)
@@ -26,3 +27,31 @@ class VectorDBController(BaseController):
 
     def get_collection_name(self, project_id: str) -> str:
         return f"collection_{project_id}".strip()
+
+    def index_into_vectordb(
+        self, chunks: list[DataChunk], collection_name: str, do_reset: bool
+    ) -> bool:
+        result = False
+        # get needed data for embedding from DataChunk objects
+        vectors = [
+            self.embedding_client.embed_text(chunk.chunk_text, DocTypeConfig.DOC.value)
+            for chunk in chunks
+        ]
+        if vectors is None or len(vectors) == 0:
+            return result
+        # inset vectors into vector db
+        _ = self.vectordb_client.create_collection(
+            collection_name=collection_name,
+            embedding_size=self.app_settings.EMBEDDING_MODEL_SIZE,
+            do_reset=do_reset,
+        )
+        meta_data = [chunk.chunk_metadata for chunk in chunks]
+        texts = [chunk.chunk_text for chunk in chunks]
+        for md, t in zip(meta_data, texts):
+            md["text"] = t
+        result = self.vectordb_client.insert_many(
+            collection_name=collection_name,
+            vectors=vectors,
+            metadata=meta_data,
+        )
+        return result
