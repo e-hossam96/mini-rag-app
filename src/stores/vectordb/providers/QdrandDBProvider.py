@@ -79,13 +79,13 @@ class QdrantDBProvider(VectorDBInterface):
             self.client.upsert(
                 collection_name=collection_name,
                 points=[
-                    models.PointStruct(vector=vector, payload=models.Payload(metadata))
+                    models.PointStruct(vector=vector, payload=metadata)
                 ],
             )
             result = True
         return result
 
-    def inset_many(
+    def insert_many(
         self,
         collection_name: str,
         vectors: list[list[float]],
@@ -98,7 +98,7 @@ class QdrantDBProvider(VectorDBInterface):
             self.client.upload_collection(
                 collection_name=collection_name,
                 vectors=vectors,
-                payload=[models.Payload(m) for m in metadata],
+                payload=metadata,
                 batch_size=batch_size,
             )
             result = True
