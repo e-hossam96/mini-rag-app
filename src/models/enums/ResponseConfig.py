@@ -17,3 +17,5 @@ class ResponseConfig(Enum):
     EMBEDDING_CHUNKS_FAILED: str = "Chunks_Embedding_Falied"
     VECTORDB_INDEXING_FALIED: str = "Indexing_VectorDB_Falied"
     VECTORDB_INDEXING_SUCCEEDED: str = "Indexing_VectorDB_Succeeded"
+    VECTORDB_COLLECTION__INFO_RETRIEVED: str = "VectorDB_Collection_Info_Retrieved"
+    VECTORDB_COLLECTION__INFO_MISSING: str = "VectorDB_Collection_Info_Missing"
