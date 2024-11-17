@@ -6,6 +6,7 @@ from typing import Union, Optional
 from qdrant_client import QdrantClient, models
 from ..VectorDBConfig import DistanceMethodConfig
 from ..VectorDBInterface import VectorDBInterface
+from models.db_schemes.VectorDBDoc import VectorDBDoc
 
 
 class QdrantDBProvider(VectorDBInterface):
@@ -78,9 +79,7 @@ class QdrantDBProvider(VectorDBInterface):
             # metadata is a dict that has the text and other values
             self.client.upsert(
                 collection_name=collection_name,
-                points=[
-                    models.PointStruct(vector=vector, payload=metadata)
-                ],
+                points=[models.PointStruct(vector=vector, payload=metadata)],
             )
             result = True
         return result
@@ -106,7 +105,7 @@ class QdrantDBProvider(VectorDBInterface):
 
     def search_by_vector(
         self, collection_name: str, vector: list[float], limit: int = 10
-    ) -> Union[list, None]:
+    ) -> Union[list[VectorDBDoc], None]:
         result = None
         if self.is_collection(collection_name):
             result = self.client.search(
@@ -114,4 +113,9 @@ class QdrantDBProvider(VectorDBInterface):
                 query_vector=vector,
                 limit=limit,
             )
+        if result is not None:
+            result = [
+                VectorDBDoc(text=record.payload["text"], score=record.score)
+                for record in result
+            ]
         return result
