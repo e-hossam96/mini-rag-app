@@ -58,12 +58,10 @@ async def index_project(
 
 @nlp_router.get("/index/info/{project_id}")
 async def get_project_index_info(request: Request, project_id: str) -> JSONResponse:
-    collection_name = f"collection_{project_id}"
-    collection_info = request.app.vectordb_client.get_collection_info(
-        collection_name=collection_name
-    )
-    collection_info = json.loads(
-        json.dumps(collection_info, default=lambda x: x.__dict__)
+    vectordb_controller = VectorDBController()
+    collection_name = vectordb_controller.get_collection_name(project_id=project_id)
+    collection_info = vectordb_controller.get_vectordb_collection_info(
+        app=request.app, collection_name=collection_name
     )
     if collection_info is None:
         return JSONResponse(
