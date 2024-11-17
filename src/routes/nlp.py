@@ -82,12 +82,13 @@ async def get_project_index_info(request: Request, project_id: str) -> JSONRespo
 async def search_index(
     request: Request, project_id: str, search_request: SearchRequest
 ) -> JSONResponse:
-    collection_name = f"collection_{project_id}"
-    query_vector = request.app.embedding_client.embed_text(
-        text=search_request.text, doc_type=DocTypeConfig.DOC.value
-    )
-    search_results = request.app.vectordb_client.search_by_vector(
-        collection_name=collection_name, vector=query_vector, limit=search_request.limit
+    vectordb_controller = VectorDBController()
+    collection_name = vectordb_controller.get_collection_name(project_id=project_id)
+    search_results = vectordb_controller.search_vectordb_collection(
+        app=request.app,
+        collection_name=collection_name,
+        text=search_request.text,
+        limit=search_request.limit,
     )
     if search_results is None:
         return JSONResponse(
@@ -95,7 +96,6 @@ async def search_index(
             status_code=status.HTTP_400_BAD_REQUEST,
         )
     else:
-        search_results = [record.model_dump(mode="json") for record in search_results]
         return JSONResponse(
             content={
                 "signal": ResponseConfig.VECTORDB_INDEX_SEARCH_SUCCEEDED.value,
