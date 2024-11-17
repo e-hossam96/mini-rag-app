@@ -116,7 +116,7 @@ async def search_index(
             status_code=status.HTTP_400_BAD_REQUEST,
         )
     else:
-        search_results = search_results.model_dump()
+        search_results = [record.model_dump(mode="json") for record in search_results]
         return JSONResponse(
             content={
                 "signal": ResponseConfig.VECTORDB_INDEX_SEARCH_SUCCEEDED.value,
