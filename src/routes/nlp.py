@@ -99,8 +99,30 @@ async def get_project_index_info(request: Request, project_id: str) -> JSONRespo
         )
 
 
-@nlp_router.post("/index/push/{project_id}")
+@nlp_router.post("/index/search/{project_id}")
 async def search_index(
     request: Request, project_id: str, search_request: SearchRequest
 ) -> JSONResponse:
-    pass
+    collection_name = f"collection_{project_id}"
+    query_vector = request.app.embedding_client.embed_text(
+        text=search_request.text, doc_type=DocTypeConfig.DOC.value
+    )
+    search_results = request.app.vectordb_client.search_by_vector(
+        collection_name=collection_name, vector=query_vector, limit=search_request.limit
+    )
+    search_results = json.loads(
+        json.dumps(search_results, default=lambda x: x.__dict__)
+    )
+    if search_results is None:
+        return JSONResponse(
+            content={"signal": ResponseConfig.VECTORDB_INDEX_SEARCH_FAILED.value},
+            status_code=status.HTTP_400_BAD_REQUEST,
+        )
+    else:
+        return JSONResponse(
+            content={
+                "signal": ResponseConfig.VECTORDB_INDEX_SEARCH_SUCCEEDED.value,
+                "search_results": search_results,
+            },
+            status_code=status.HTTP_200_OK,
+        )
