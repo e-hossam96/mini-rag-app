@@ -1,5 +1,6 @@
 """Implementation of NLP routes."""
 
+import json
 from fastapi.responses import JSONResponse
 from fastapi import APIRouter, status, Request
 from .schemes.nlp import PushRequest, SearchRequest
@@ -76,7 +77,26 @@ async def index_project(
 
 @nlp_router.get("/index/info/{project_id}")
 async def get_project_index_info(request: Request, project_id: str) -> JSONResponse:
-    pass
+    collection_name = f"collection_{project_id}"
+    collection_info = request.app.vectordb_client.get_collection_info(
+        collection_name=collection_name
+    )
+    collection_info = json.loads(
+        json.dumps(collection_info, default=lambda x: x.__dict__)
+    )
+    if collection_info is None:
+        return JSONResponse(
+            content={"signal": ResponseConfig.VECTORDB_COLLECTION__INFO_MISSING.value},
+            status_code=status.HTTP_400_BAD_REQUEST,
+        )
+    else:
+        return JSONResponse(
+            content={
+                "signal": ResponseConfig.VECTORDB_COLLECTION__INFO_RETRIEVED.value,
+                "collection_info": collection_info,
+            },
+            status_code=status.HTTP_200_OK,
+        )
 
 
 @nlp_router.post("/index/push/{project_id}")
