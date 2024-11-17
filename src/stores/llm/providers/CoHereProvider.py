@@ -22,6 +22,7 @@ class CoHereProvider(LLMInterface):
         self.max_input_characters = max_input_characters
         self.max_output_tokens = max_output_tokens
         self.temperature = temperature
+        self.config = CoHereV2Config
         # runtime changables
         self.generation_model_id = None
         self.embedding_model_id = None
