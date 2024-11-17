@@ -53,5 +53,5 @@ class ProjectDataModel(BaseDataModel):
         async for record in cursor:
             project = Project(**record)
             project._id = record["_id"]
-            projects.append()
+            projects.append(project)
         return projects, num_pages
