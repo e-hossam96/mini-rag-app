@@ -110,15 +110,13 @@ async def search_index(
     search_results = request.app.vectordb_client.search_by_vector(
         collection_name=collection_name, vector=query_vector, limit=search_request.limit
     )
-    search_results = json.loads(
-        json.dumps(search_results, default=lambda x: x.__dict__)
-    )
     if search_results is None:
         return JSONResponse(
             content={"signal": ResponseConfig.VECTORDB_INDEX_SEARCH_FAILED.value},
             status_code=status.HTTP_400_BAD_REQUEST,
         )
     else:
+        search_results = search_results.model_dump()
         return JSONResponse(
             content={
                 "signal": ResponseConfig.VECTORDB_INDEX_SEARCH_SUCCEEDED.value,
