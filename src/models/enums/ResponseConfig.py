@@ -3,7 +3,7 @@
 from enum import Enum
 
 
-class ResponseSignal(Enum):
+class ResponseConfig(Enum):
     FILE_TYPE_NOT_SUPPORTED: str = "File_Type_Note_Supported"
     FILE_EXCEEDED_MAX_SIZE: str = "File_Exceeded_Maximum_SIZE"
     FILE_PASSED_VALIDATION: str = "File_Passed_Validation"
