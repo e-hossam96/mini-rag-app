@@ -7,6 +7,7 @@ from motor.motor_asyncio import AsyncIOMotorClient
 from contextlib import asynccontextmanager
 from stores.llm.LLMProviderFactory import LLMProviderFactory
 from stores.vectordb.VectorDBProviderFactory import VectorDBProviderFactory
+from stores.llm.templates.template_parser import TemplateParser
 
 
 def connect_mongo(
@@ -46,12 +47,18 @@ def connect_vectordb_providers(app: FastAPI, app_settinigs: Settings) -> FastAPI
     return app
 
 
+def set_prompt_template_parser(app: FastAPI, app_settings: Settings) -> FastAPI:
+    app.prompt_template = TemplateParser(lang=app_settings.PROMPT_TEMPLATE_LANG)
+    return app
+
+
 @asynccontextmanager
 async def connect_lifespan_clients(app: FastAPI):
     app_settinigs = get_settings()
     app = connect_mongo(app, app_settinigs)
     app = connect_llm_providers(app, app_settinigs)
     app = connect_vectordb_providers(app, app_settinigs)
+    app = set_prompt_template_parser(app, app_settinigs)
     yield
     app.db_connection.close()
     app.vectordb_client.disconnect()
