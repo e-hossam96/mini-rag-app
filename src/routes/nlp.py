@@ -6,10 +6,10 @@ from fastapi import APIRouter, status, Request
 from .schemes.nlp import PushRequest, SearchRequest
 from models.enums.ResponseConfig import ResponseConfig
 from models.ChunkDataModel import ChunkDataModel
-from models.db_schemes.DataChunk import DataChunk
 from models.ProjectDataModel import ProjectDataModel
 from stores.llm.LLMConfig import DocTypeConfig
 from helpers.config import get_settings
+from controllers.VectorDBController import VectorDBController
 
 nlp_router = APIRouter(prefix="/api/v1/nlp", tags=["api_v1", "nlp"])
 
@@ -21,6 +21,7 @@ async def index_project(
     project_model = await ProjectDataModel.create_instance(request.app.db_client)
     chunk_model = await ChunkDataModel.create_instance(request.app.db_client)
     project = await project_model.get_project(project_id=project_id)
+    vectordb_controller = VectorDBController()
     # get chunks using project id
     chunks_batch, num_pages = await chunk_model.get_all_project_chunks(project._id)
     project_chunks = [] + chunks_batch
@@ -34,34 +35,14 @@ async def index_project(
             content={"signal": ResponseConfig.NO_CHUNKS_ERROR.value},
             status_code=status.HTTP_400_BAD_REQUEST,
         )
-    # embed all the texts of the chunks
-    vectors = [
-        request.app.embedding_client.embed_text(
-            chunk.chunk_text, DocTypeConfig.DOC.value
-        )
-        for chunk in project_chunks
-    ]
-    if not vectors or None in vectors:
-        return JSONResponse(
-            content={"signal": ResponseConfig.EMBEDDING_CHUNKS_FAILED.value},
-            status_code=status.HTTP_400_BAD_REQUEST,
-        )
-    # inset vectors into vector db
-    app_settings = get_settings()
-    collection_name = f"collection_{project_id}"
-    _ = request.app.vectordb_client.create_collection(
+    # use controller to handle indexing process
+    collection_name = vectordb_controller.get_collection_name(project_id=project_id)
+    result = vectordb_controller.index_into_vectordb(
+        app=request.app,
+        app_settings=get_settings(),
+        chunks=project_chunks,
         collection_name=collection_name,
-        embedding_size=app_settings.EMBEDDING_MODEL_SIZE,
         do_reset=push_request.do_reset,
-    )
-    meta_data = [chunk.chunk_metadata for chunk in project_chunks]
-    texts = [chunk.chunk_text for chunk in project_chunks]
-    for md, t in zip(meta_data, texts):
-        md["text"] = t
-    result = request.app.vectordb_client.insert_many(
-        collection_name=collection_name,
-        vectors=vectors,
-        metadata=meta_data,
     )
     if result:
         return JSONResponse(
