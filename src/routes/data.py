@@ -6,7 +6,7 @@ from controllers.ProcessController import ProcessController
 from fastapi import APIRouter, UploadFile, status, Request
 from fastapi.responses import JSONResponse
 from .schemes.data import ProcessRequest
-from models.enums.ResponseSignal import ResponseSignal
+from models.enums.ResponseConfig import ResponseConfig
 from typing import Union
 from langchain_core.documents.base import Document
 from models.ProjectDataModel import ProjectDataModel
@@ -91,14 +91,14 @@ async def process_data(
         asset = await asset_model.get_project_asset(str(project._id), process_file_id)
         if asset is None:
             return JSONResponse(
-                content={"signal": ResponseSignal.NO_FILE_ERROR.value},
+                content={"signal": ResponseConfig.NO_FILE_ERROR.value},
                 status_code=status.HTTP_400_BAD_REQUEST,
             )
         assets.append(asset)
 
     if not assets:
         return JSONResponse(
-            content={"signal": ResponseSignal.NO_FILES_ERROR.value},
+            content={"signal": ResponseConfig.NO_FILES_ERROR.value},
             status_code=status.HTTP_400_BAD_REQUEST,
         )
 
@@ -113,7 +113,7 @@ async def process_data(
         file_content = process_controller.get_file_content(asset.asset_name)
         if file_content is None:
             # return JSONResponse(
-            #     content={"signal": ResponseSignal.FILE_PROCESS_FAILED.value},
+            #     content={"signal": ResponseConfig.FILE_PROCESS_FAILED.value},
             #     status_code=status.HTTP_400_BAD_REQUEST,
             # )
             logging.error(f"File missing or empty content for file: {asset.asset_name}")
@@ -138,7 +138,7 @@ async def process_data(
 
     return JSONResponse(
         content={
-            "signal": ResponseSignal.FILE_PROCESS_SUCCEEDED.value,
+            "signal": ResponseConfig.FILE_PROCESS_SUCCEEDED.value,
             "num_chunks": num_chunks,
             "num_files": num_files,
         },
