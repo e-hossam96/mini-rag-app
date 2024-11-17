@@ -3,7 +3,7 @@
 from .BaseDataModel import BaseDataModel
 from motor.motor_asyncio import AsyncIOMotorDatabase
 from .enums.DatabaseConfig import DatabaseConfig
-from .db_schemes.project import Project
+from .db_schemes.Project import Project
 from typing import Self
 
 

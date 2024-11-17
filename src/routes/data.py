@@ -12,8 +12,8 @@ from langchain_core.documents.base import Document
 from models.ProjectDataModel import ProjectDataModel
 from models.ChunkDataModel import ChunkDataModel
 from models.AssetDataModel import AssetDataModel
-from models.db_schemes.data_chunk import DataChunk
-from models.db_schemes.asset import Asset
+from models.db_schemes.DataChunk import DataChunk
+from models.db_schemes.Asset import Asset
 from models.enums.AssetConfig import AssetConfig
 
 data_router = APIRouter(prefix="/api/v1/data", tags=["api_v1", "data"])

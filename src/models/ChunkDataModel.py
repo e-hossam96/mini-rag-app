@@ -3,7 +3,7 @@
 from .BaseDataModel import BaseDataModel
 from motor.motor_asyncio import AsyncIOMotorDatabase
 from .enums.DatabaseConfig import DatabaseConfig
-from .db_schemes.data_chunk import DataChunk
+from .db_schemes.DataChunk import DataChunk
 from typing import Union, Self
 from bson.objectid import ObjectId
 from pymongo import InsertOne

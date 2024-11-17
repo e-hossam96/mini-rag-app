@@ -6,7 +6,7 @@ from fastapi import APIRouter, status, Request
 from .schemes.nlp import PushRequest, SearchRequest
 from models.enums.ResponseConfig import ResponseConfig
 from models.ChunkDataModel import ChunkDataModel
-from models.db_schemes.data_chunk import DataChunk
+from models.db_schemes.DataChunk import DataChunk
 from models.ProjectDataModel import ProjectDataModel
 from stores.llm.LLMConfig import DocTypeConfig
 from helpers.config import get_settings
