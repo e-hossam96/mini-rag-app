@@ -15,3 +15,5 @@ class ResponseConfig(Enum):
     NO_FILE_ERROR: str = "File_Not_Found_in_Database"
     NO_CHUNKS_ERROR: str = "No_Chunks_Found_in_Database"
     EMBEDDING_CHUNKS_FAILED: str = "Chunks_Embedding_Falied"
+    VECTORDB_INDEXING_FALIED: str = "Indexing_VectorDB_Falied"
+    VECTORDB_INDEXING_SUCCEEDED: str = "Indexing_VectorDB_Succeeded"
