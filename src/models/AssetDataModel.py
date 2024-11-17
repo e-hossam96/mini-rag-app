@@ -8,7 +8,7 @@ from bson.objectid import ObjectId
 from typing import Union, Self
 
 
-class AssetModel(BaseDataModel):
+class AssetDataModel(BaseDataModel):
     def __init__(self, db_client: AsyncIOMotorDatabase) -> None:
         super().__init__(db_client)
         self.collection_name = DatabaseConfig.ASSET_COLLECTION_NAME.value
