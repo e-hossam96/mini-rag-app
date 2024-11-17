@@ -5,7 +5,6 @@ import pathlib
 from .BaseController import BaseController
 from fastapi import FastAPI
 from helpers.config import Settings
-from models.db_schemes.VectorDBDoc import VectorDBDoc
 from models.db_schemes.DataChunk import DataChunk
 from stores.llm.LLMConfig import DocTypeConfig
 from typing import Union
@@ -70,3 +69,23 @@ class VectorDBController(BaseController):
                 json.dumps(collection_info, default=lambda x: x.__dict__)
             )
         return collection_info
+
+    def search_vectordb_collection(
+        self, app: FastAPI, collection_name: str, text: str, limit: int
+    ) -> Union[list[dict], None]:
+        search_results = None
+        query_vector = app.embedding_client.embed_text(
+            text=text, doc_type=DocTypeConfig.DOC.value
+        )
+        if query_vector is None:
+            return search_results
+        search_results = app.vectordb_client.search_by_vector(
+            collection_name=collection_name,
+            vector=query_vector,
+            limit=limit,
+        )
+        if search_results is not None:
+            search_results = [
+                record.model_dump(mode="json") for record in search_results
+            ]
+        return search_results
