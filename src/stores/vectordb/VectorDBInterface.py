@@ -46,7 +46,7 @@ class VectorDBInterface(ABC):
         pass
 
     @abstractmethod
-    def inset_many(
+    def insert_many(
         self,
         collection_name: str,
         vectors: list[list[float]],

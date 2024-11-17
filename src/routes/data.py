@@ -6,12 +6,12 @@ from controllers.ProcessController import ProcessController
 from fastapi import APIRouter, UploadFile, status, Request
 from fastapi.responses import JSONResponse
 from .schemes.data import ProcessRequest
-from models.enums.ResponseSignal import ResponseSignal
+from models.enums.ResponseConfig import ResponseConfig
 from typing import Union
 from langchain_core.documents.base import Document
-from models.ProjectModel import ProjectModel
-from models.ChunkModel import ChunkModel
-from models.AssetModel import AssetModel
+from models.ProjectDataModel import ProjectDataModel
+from models.ChunkDataModel import ChunkDataModel
+from models.AssetDataModel import AssetDataModel
 from models.db_schemes.data_chunk import DataChunk
 from models.db_schemes.asset import Asset
 from models.enums.AssetConfig import AssetConfig
@@ -35,14 +35,14 @@ async def upload_data(
         )
         return resp
     # upload file to server
-    project_model = await ProjectModel.create_instance(request.app.db_client)
+    project_model = await ProjectDataModel.create_instance(request.app.db_client)
     project = await project_model.get_project(project_id=project_id)
     file_path, file_id = data_controller.get_unique_file_path(project_id, file.filename)
     is_written, write_signal = await data_controller.write_uploaded_file(
         file, file_path
     )
     # store asset into database
-    asset_model = await AssetModel.create_instance(request.app.db_client)
+    asset_model = await AssetDataModel.create_instance(request.app.db_client)
     asset = Asset(
         asset_project_id=project._id,
         asset_type=AssetConfig.FILE_TYPE_NAME.value,
@@ -74,10 +74,10 @@ async def process_data(
     process_controller = ProcessController(project_id)
 
     # define all needed models
-    project_model = await ProjectModel.create_instance(request.app.db_client)
+    project_model = await ProjectDataModel.create_instance(request.app.db_client)
     project = await project_model.get_project(project_id=project_id)
-    chunk_model = await ChunkModel.create_instance(request.app.db_client)
-    asset_model = await AssetModel.create_instance(request.app.db_client)
+    chunk_model = await ChunkDataModel.create_instance(request.app.db_client)
+    asset_model = await AssetDataModel.create_instance(request.app.db_client)
 
     # get file assets
     assets = []
@@ -91,14 +91,14 @@ async def process_data(
         asset = await asset_model.get_project_asset(str(project._id), process_file_id)
         if asset is None:
             return JSONResponse(
-                content={"signal": ResponseSignal.NO_FILE_ERROR.value},
+                content={"signal": ResponseConfig.NO_FILE_ERROR.value},
                 status_code=status.HTTP_400_BAD_REQUEST,
             )
         assets.append(asset)
 
     if not assets:
         return JSONResponse(
-            content={"signal": ResponseSignal.NO_FILES_ERROR.value},
+            content={"signal": ResponseConfig.NO_FILES_ERROR.value},
             status_code=status.HTTP_400_BAD_REQUEST,
         )
 
@@ -113,7 +113,7 @@ async def process_data(
         file_content = process_controller.get_file_content(asset.asset_name)
         if file_content is None:
             # return JSONResponse(
-            #     content={"signal": ResponseSignal.FILE_PROCESS_FAILED.value},
+            #     content={"signal": ResponseConfig.FILE_PROCESS_FAILED.value},
             #     status_code=status.HTTP_400_BAD_REQUEST,
             # )
             logging.error(f"File missing or empty content for file: {asset.asset_name}")
@@ -138,7 +138,7 @@ async def process_data(
 
     return JSONResponse(
         content={
-            "signal": ResponseSignal.FILE_PROCESS_SUCCEEDED.value,
+            "signal": ResponseConfig.FILE_PROCESS_SUCCEEDED.value,
             "num_chunks": num_chunks,
             "num_files": num_files,
         },

@@ -9,7 +9,7 @@ from bson.objectid import ObjectId
 from pymongo import InsertOne
 
 
-class ChunkModel(BaseDataModel):
+class ChunkDataModel(BaseDataModel):
     def __init__(self, db_client: AsyncIOMotorDatabase) -> None:
         super().__init__(db_client)
         self.collection_name = DatabaseConfig.CHUNK_COLLECTION_NAME.value
@@ -54,5 +54,25 @@ class ChunkModel(BaseDataModel):
         return num_chunks
 
     async def clear_project_chunks(self, project_id: str) -> int:
-        result = await self.db_collection.delete_many({"chunk_project_id": project_id})
+        result = await self.db_collection.delete_many(
+            {"chunk_project_id": ObjectId(project_id)}
+        )
         return result.deleted_count
+
+    async def get_all_project_chunks(
+        self, project_id: str, page_index: int = 0, page_size: int = 10
+    ) -> tuple[list[DataChunk], int]:
+        num_records = await self.db_collection.count_documents({})
+        num_pages = num_records // page_size
+        num_pages += 1 if num_records % page_size else 0
+        cursor = (
+            self.db_collection.find({"chunk_project_id": ObjectId(project_id)})
+            .skip(page_index * page_size)
+            .limit(page_size)
+        )
+        chunks = []
+        async for record in cursor:
+            chunk = DataChunk(**record)
+            chunk._id = record["_id"]
+            chunks.append(chunk)
+        return chunks, num_pages

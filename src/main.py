@@ -1,7 +1,7 @@
 """Main FastAPI application."""
 
 from fastapi import FastAPI
-from routes import base, data
+from routes import base, data, nlp
 from helpers.config import get_settings, Settings
 from motor.motor_asyncio import AsyncIOMotorClient
 from contextlib import asynccontextmanager
@@ -62,3 +62,4 @@ app = FastAPI(lifespan=connect_lifespan_clients)
 
 app.include_router(base.base_router)
 app.include_router(data.data_router)
+app.include_router(nlp.nlp_router)

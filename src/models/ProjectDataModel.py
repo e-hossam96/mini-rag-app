@@ -7,7 +7,7 @@ from .db_schemes.project import Project
 from typing import Self
 
 
-class ProjectModel(BaseDataModel):
+class ProjectDataModel(BaseDataModel):
     def __init__(self, db_client: AsyncIOMotorDatabase) -> None:
         super().__init__(db_client)
         self.collection_name = DatabaseConfig.PROJECT_COLLECTION_NAME.value
@@ -53,5 +53,5 @@ class ProjectModel(BaseDataModel):
         async for record in cursor:
             project = Project(**record)
             project._id = record["_id"]
-            projects.append()
+            projects.append(project)
         return projects, num_pages
