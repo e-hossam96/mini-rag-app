@@ -1,6 +1,6 @@
 # mini-rag-app
 
-Minimal RAG Application.
+Minimal RAG Application. This is my implementation of the `mini-rag-app` playlist by Eng. Abu Bakr Soliman on [Youtube](https://youtube.com/playlist?list=PLvLvlVqNQGHCUR2p0b8a0QpVjDUg50wQj&si=R1UppbwwmPqejbWI). Original Github repository: [mini-rag](https://github.com/bakrianoo/mini-rag).
 
 ## Setup
 
@@ -41,34 +41,27 @@ conda env create -f environment.yml
 conda activate mini-rag
 ```
 
-- Fill [.env.example](./.env.example) file and save it into a `.env` file.
+- Fill [.env.example](./.env.example) file and save it into a `.env` file. Notice, it is already filled with the default settings except the API keys. Feel free to change them to your preferences.
 
 ```bash
 cp .env.example .env
 ```
 
-- Configure **Docker** setups to run **MongoDB** container.
+- Configure **Docker** setups to run **MongoDB** container and deploy the application later.
 
-  - Install `docker`. [details for linux to be added later]
-  - Add your `user` to `docker` group.
-
-  ```bash
-  user@DEVICE:~$ usermod -aG docker user
-  ```
-
+  - Install `docker`. Details for Linux can be found [here](https://docs.docker.com/engine/install/ubuntu/).
+  - Add your `user` to `docker` group by following the steps in [here](https://docs.docker.com/engine/install/linux-postinstall/).
   - Fill [.env.example](./docker/.env.example) file using desired `mongodb` credentials and save it into a `.env` file.
 
   ```bash
   cp ../docker/.env.example ../docker/.env
   ```
 
-  - Compose the docker services. You may need to use `sudo` if it is the first time.
+  - Compose the docker services.
 
   ```bash
   docker compose up -d
   ```
-
-  - You may need to reset the `mongodb` container while development. [details to be added later]
 
 - Run the `FastAPI` server. Use the `--reload` argument only for development. A **Postman** collection is available in the [assets](./assets/mini-rag-app.postman_collection.json) directory for your help.
 
