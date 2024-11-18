@@ -92,21 +92,36 @@ class VectorDBController(BaseController):
 
     def answer_rag_query(
         self, app: FastAPI, collection_name: str, text: str, limit: int
-    ) -> Union[str, None]:
-        ans = None
+    ) -> Union[tuple[str], tuple[None]]:
+        ans, prompt, chat_history = None, None, None
         search_results = self.search_vectordb_collection(
             app, collection_name, text, limit
         )
         if search_results is None:
-            return ans
+            return ans, prompt, chat_history
         # get prompt conponents
         system_msg = app.prompt_template.get_template(group="rag", key="system_prompt")
-        augmentations = [
-            app.prompt_template.get_template(
-                group="rag",
-                key="system_prompt",
-                vars={"doc_num": i + 1, "chunk_text": doc["text"]},
+        augmentations = "\n".join(
+            [
+                app.prompt_template.get_template(
+                    group="rag",
+                    key="document_prompt",
+                    vars={"doc_num": i + 1, "chunk_text": doc["text"]},
+                )
+                for i, doc in enumerate(search_results)
+            ]
+        )
+        query_msg = app.prompt_template.get_template(
+            group="rag", key="footer_prompt", vars={"user_query": text}
+        )
+        chat_history = [
+            app.generation_client.construct_prompt(
+                prompt=system_msg, role=app.generation_client.config.SYSTEM.value
             )
-            for i, doc in enumerate(search_results)
         ]
-        
+        prompt = "\n\n".join([augmentations, query_msg])
+        # get answer from LLM
+        ans = app.generation_client.generate_text(
+            prompt=prompt, chat_history=chat_history
+        )
+        return ans, prompt, chat_history
