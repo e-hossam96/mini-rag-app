@@ -25,7 +25,7 @@
 			"response": []
 		},
 		{
-			"name": "upload",
+			"name": "database-upload",
 			"request": {
 				"method": "POST",
 				"header": [],
@@ -35,12 +35,12 @@
 						{
 							"key": "file",
 							"type": "file",
-							"src": "postman-cloud:///1ef9a211-6bf0-4370-a6c4-5964ff791d46"
+							"src": "///wsl.localhost/Ubuntu-24.04/home/hossam/Projects/Mini RAG App/src/assets/arabic_wiki.txt"
 						}
 					]
 				},
 				"url": {
-					"raw": "{{api}}/api/v1/data/upload/1",
+					"raw": "{{api}}/api/v1/data/upload/2",
 					"host": [
 						"{{api}}"
 					],
@@ -49,20 +49,20 @@
 						"v1",
 						"data",
 						"upload",
-						"1"
+						"2"
 					]
 				}
 			},
 			"response": []
 		},
 		{
-			"name": "process",
+			"name": "database-process",
 			"request": {
 				"method": "POST",
 				"header": [],
 				"body": {
 					"mode": "raw",
-					"raw": "{\r\n    \"process_file_id\": \"tf2eedzuc4kf__wiki.txt\"\r\n}",
+					"raw": "{\r\n    // \"process_file_id\": \"tcupncw6hzbr__wiki.txt\",\r\n    \"process_chunk_size\": 512,\r\n    \"process_overlap_size\": 32,\r\n    \"process_do_reset\": true\r\n}",
 					"options": {
 						"raw": {
 							"language": "json"
@@ -70,7 +70,7 @@
 					}
 				},
 				"url": {
-					"raw": "{{api}}/api/v1/data/process/1",
+					"raw": "{{api}}/api/v1/data/process/2",
 					"host": [
 						"{{api}}"
 					],
@@ -79,7 +79,122 @@
 						"v1",
 						"data",
 						"process",
-						"1"
+						"2"
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "index-push",
+			"request": {
+				"method": "POST",
+				"header": [],
+				"body": {
+					"mode": "raw",
+					"raw": "{\r\n    \"do_reset\": true\r\n}",
+					"options": {
+						"raw": {
+							"language": "json"
+						}
+					}
+				},
+				"url": {
+					"raw": "{{api}}/api/v1/nlp/index/push/2",
+					"host": [
+						"{{api}}"
+					],
+					"path": [
+						"api",
+						"v1",
+						"nlp",
+						"index",
+						"push",
+						"2"
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "index-info",
+			"request": {
+				"method": "GET",
+				"header": [],
+				"url": {
+					"raw": "{{api}}/api/v1/nlp/index/info/2",
+					"host": [
+						"{{api}}"
+					],
+					"path": [
+						"api",
+						"v1",
+						"nlp",
+						"index",
+						"info",
+						"2"
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "index-search",
+			"request": {
+				"method": "POST",
+				"header": [],
+				"body": {
+					"mode": "raw",
+					"raw": "{\r\n    \"text\": \"ما هو حجم كوكب الزهرة مقارنة بكوكب الأرض؟\",\r\n    \"limit\": 4\r\n}",
+					"options": {
+						"raw": {
+							"language": "json"
+						}
+					}
+				},
+				"url": {
+					"raw": "{{api}}/api/v1/nlp/index/search/2",
+					"host": [
+						"{{api}}"
+					],
+					"path": [
+						"api",
+						"v1",
+						"nlp",
+						"index",
+						"search",
+						"2"
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "index-answer",
+			"request": {
+				"method": "POST",
+				"header": [],
+				"body": {
+					"mode": "raw",
+					"raw": "{\r\n    \"text\": \"ما هو حجم كوكب الزهرة مقارنة بكوكب الأرض؟\",\r\n    \"limit\": 2\r\n}",
+					"options": {
+						"raw": {
+							"language": "json"
+						}
+					}
+				},
+				"url": {
+					"raw": "{{api}}/api/v1/nlp/index/answer/2",
+					"host": [
+						"{{api}}"
+					],
+					"path": [
+						"api",
+						"v1",
+						"nlp",
+						"index",
+						"answer",
+						"2"
 					]
 				}
 			},
