@@ -40,7 +40,7 @@ class TemplateParser:
         if not lang_path.exists():
             # default lang templates are not defined
             return template
-        lang_group_path = lang_path.joinpath(group)
+        lang_group_path = lang_path.joinpath(f"{group}.py")
         if not lang_group_path.exists():
             # group not defined for niether lang not default lang
             return template
@@ -52,5 +52,5 @@ class TemplateParser:
             # group is empty
             return template
         # all is well at this point
-        template = getattr(o=module, name=key).substitute(vars)
+        template = getattr(module, key).substitute(vars)
         return template
