@@ -2,6 +2,12 @@
 
 Minimal RAG Application. This is my implementation of the `mini-rag-app` playlist by Eng. Abu Bakr Soliman on [Youtube](https://youtube.com/playlist?list=PLvLvlVqNQGHCUR2p0b8a0QpVjDUg50wQj&si=R1UppbwwmPqejbWI). Original Github repository: [mini-rag](https://github.com/bakrianoo/mini-rag).
 
+## Retrieval-Augmented Generation (RAG)
+
+The aim is to provide additional materials for the user query, which will assist the AI model in generating appropriate responses.
+
+![RAG](./src/assets/rag.drawio.png)
+
 ## Setup
 
 This environment is setup to work on a Linux platform. Make sure to use WSL2 on windows.
@@ -68,3 +74,7 @@ cp .env.example .env
 ```bash
 uvicorn main:app --reload --host 0.0.0.0 --port 8000
 ```
+
+## Usage
+
+You can use the exported **Postman** collection provided [here](./src/assets/mini-rag-app.postman_collection.json) and the sample _text_ files to send queries to the different endpoints and evaluate the results.
