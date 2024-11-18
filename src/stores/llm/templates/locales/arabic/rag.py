@@ -20,6 +20,4 @@ system_prompt = Template(
 document_prompt = Template(("## الوثيقة رقم: $doc_num\n" "### المحتوى: $chunk_text"))
 
 #### Footer ####
-footer_prompt = Template(
-    ("بناءً فقط على الوثائق أعلاه، يرجى توليد إجابة للمستخدم.\n" "## الإجابة:")
-)
+footer_prompt = Template(("بناءً فقط على الوثائق أعلاه، $user_query"))

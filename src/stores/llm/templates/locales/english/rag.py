@@ -20,9 +20,4 @@ system_prompt = Template(
 document_prompt = Template(("## Document No: $doc_num\n" "### Content: $chunk_text"))
 
 #### Footer ####
-footer_prompt = Template(
-    (
-        "Based only on the above documents, please generate an answer for the user.\n"
-        "## Answer:"
-    )
-)
+footer_prompt = Template(("Based only on the above documents, $user_query"))

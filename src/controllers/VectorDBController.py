@@ -89,3 +89,24 @@ class VectorDBController(BaseController):
                 record.model_dump(mode="json") for record in search_results
             ]
         return search_results
+
+    def answer_rag_query(
+        self, app: FastAPI, collection_name: str, text: str, limit: int
+    ) -> Union[str, None]:
+        ans = None
+        search_results = self.search_vectordb_collection(
+            app, collection_name, text, limit
+        )
+        if search_results is None:
+            return ans
+        # get prompt conponents
+        system_msg = app.prompt_template.get_template(group="rag", key="system_prompt")
+        augmentations = [
+            app.prompt_template.get_template(
+                group="rag",
+                key="system_prompt",
+                vars={"doc_num": i + 1, "chunk_text": doc["text"]},
+            )
+            for i, doc in enumerate(search_results)
+        ]
+        
