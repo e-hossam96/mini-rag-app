@@ -103,3 +103,32 @@ async def search_index(
             },
             status_code=status.HTTP_200_OK,
         )
+
+
+@nlp_router.post("/index/answer/{project_id}")
+async def search_index(
+    request: Request, project_id: str, query_request: SearchRequest
+) -> JSONResponse:
+    vectordb_controller = VectorDBController()
+    collection_name = vectordb_controller.get_collection_name(project_id=project_id)
+    query_results = vectordb_controller.answer_rag_query(
+        app=request.app,
+        collection_name=collection_name,
+        text=query_request.text,
+        limit=query_request.limit,
+    )
+    if query_results[0] is None:
+        return JSONResponse(
+            content={"signal": ResponseConfig.RAG_ANSWER_FAILED.value},
+            status_code=status.HTTP_400_BAD_REQUEST,
+        )
+    else:
+        return JSONResponse(
+            content={
+                "signal": ResponseConfig.VECTORDB_INDEX_SEARCH_SUCCEEDED.value,
+                "answer": query_results[0],
+                "prompt": query_results[1],
+                "chat_history": query_results[2],
+            },
+            status_code=status.HTTP_200_OK,
+        )
