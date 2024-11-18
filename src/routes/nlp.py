@@ -6,10 +6,10 @@ from fastapi import APIRouter, status, Request
 from .schemes.nlp import PushRequest, SearchRequest
 from models.enums.ResponseConfig import ResponseConfig
 from models.ChunkDataModel import ChunkDataModel
-from models.db_schemes.data_chunk import DataChunk
 from models.ProjectDataModel import ProjectDataModel
 from stores.llm.LLMConfig import DocTypeConfig
 from helpers.config import get_settings
+from controllers.VectorDBController import VectorDBController
 
 nlp_router = APIRouter(prefix="/api/v1/nlp", tags=["api_v1", "nlp"])
 
@@ -21,6 +21,7 @@ async def index_project(
     project_model = await ProjectDataModel.create_instance(request.app.db_client)
     chunk_model = await ChunkDataModel.create_instance(request.app.db_client)
     project = await project_model.get_project(project_id=project_id)
+    vectordb_controller = VectorDBController()
     # get chunks using project id
     chunks_batch, num_pages = await chunk_model.get_all_project_chunks(project._id)
     project_chunks = [] + chunks_batch
@@ -34,34 +35,14 @@ async def index_project(
             content={"signal": ResponseConfig.NO_CHUNKS_ERROR.value},
             status_code=status.HTTP_400_BAD_REQUEST,
         )
-    # embed all the texts of the chunks
-    vectors = [
-        request.app.embedding_client.embed_text(
-            chunk.chunk_text, DocTypeConfig.DOC.value
-        )
-        for chunk in project_chunks
-    ]
-    if not vectors or None in vectors:
-        return JSONResponse(
-            content={"signal": ResponseConfig.EMBEDDING_CHUNKS_FAILED.value},
-            status_code=status.HTTP_400_BAD_REQUEST,
-        )
-    # inset vectors into vector db
-    app_settings = get_settings()
-    collection_name = f"collection_{project_id}"
-    _ = request.app.vectordb_client.create_collection(
+    # use controller to handle indexing process
+    collection_name = vectordb_controller.get_collection_name(project_id=project_id)
+    result = vectordb_controller.index_into_vectordb(
+        app=request.app,
+        app_settings=get_settings(),
+        chunks=project_chunks,
         collection_name=collection_name,
-        embedding_size=app_settings.EMBEDDING_MODEL_SIZE,
         do_reset=push_request.do_reset,
-    )
-    meta_data = [chunk.chunk_metadata for chunk in project_chunks]
-    texts = [chunk.chunk_text for chunk in project_chunks]
-    for md, t in zip(meta_data, texts):
-        md["text"] = t
-    result = request.app.vectordb_client.insert_many(
-        collection_name=collection_name,
-        vectors=vectors,
-        metadata=meta_data,
     )
     if result:
         return JSONResponse(
@@ -77,12 +58,10 @@ async def index_project(
 
 @nlp_router.get("/index/info/{project_id}")
 async def get_project_index_info(request: Request, project_id: str) -> JSONResponse:
-    collection_name = f"collection_{project_id}"
-    collection_info = request.app.vectordb_client.get_collection_info(
-        collection_name=collection_name
-    )
-    collection_info = json.loads(
-        json.dumps(collection_info, default=lambda x: x.__dict__)
+    vectordb_controller = VectorDBController()
+    collection_name = vectordb_controller.get_collection_name(project_id=project_id)
+    collection_info = vectordb_controller.get_vectordb_collection_info(
+        app=request.app, collection_name=collection_name
     )
     if collection_info is None:
         return JSONResponse(
@@ -103,15 +82,13 @@ async def get_project_index_info(request: Request, project_id: str) -> JSONRespo
 async def search_index(
     request: Request, project_id: str, search_request: SearchRequest
 ) -> JSONResponse:
-    collection_name = f"collection_{project_id}"
-    query_vector = request.app.embedding_client.embed_text(
-        text=search_request.text, doc_type=DocTypeConfig.DOC.value
-    )
-    search_results = request.app.vectordb_client.search_by_vector(
-        collection_name=collection_name, vector=query_vector, limit=search_request.limit
-    )
-    search_results = json.loads(
-        json.dumps(search_results, default=lambda x: x.__dict__)
+    vectordb_controller = VectorDBController()
+    collection_name = vectordb_controller.get_collection_name(project_id=project_id)
+    search_results = vectordb_controller.search_vectordb_collection(
+        app=request.app,
+        collection_name=collection_name,
+        text=search_request.text,
+        limit=search_request.limit,
     )
     if search_results is None:
         return JSONResponse(
@@ -123,6 +100,35 @@ async def search_index(
             content={
                 "signal": ResponseConfig.VECTORDB_INDEX_SEARCH_SUCCEEDED.value,
                 "search_results": search_results,
+            },
+            status_code=status.HTTP_200_OK,
+        )
+
+
+@nlp_router.post("/index/answer/{project_id}")
+async def search_index(
+    request: Request, project_id: str, query_request: SearchRequest
+) -> JSONResponse:
+    vectordb_controller = VectorDBController()
+    collection_name = vectordb_controller.get_collection_name(project_id=project_id)
+    query_results = vectordb_controller.answer_rag_query(
+        app=request.app,
+        collection_name=collection_name,
+        text=query_request.text,
+        limit=query_request.limit,
+    )
+    if query_results[0] is None:
+        return JSONResponse(
+            content={"signal": ResponseConfig.RAG_ANSWER_FAILED.value},
+            status_code=status.HTTP_400_BAD_REQUEST,
+        )
+    else:
+        return JSONResponse(
+            content={
+                "signal": ResponseConfig.VECTORDB_INDEX_SEARCH_SUCCEEDED.value,
+                "answer": query_results[0],
+                "prompt": query_results[1],
+                "chat_history": query_results[2],
             },
             status_code=status.HTTP_200_OK,
         )

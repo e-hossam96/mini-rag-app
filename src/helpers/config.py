@@ -35,6 +35,8 @@ class Settings(BaseSettings):
     VECTORDB_BACKEND: str
     VECTORDB_DISTANCE: str = None
 
+    PROMPT_TEMPLATE_LANG: str = None
+
     class Config:
         env_file = ".env"
 

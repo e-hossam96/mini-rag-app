@@ -3,7 +3,7 @@
 from .BaseDataModel import BaseDataModel
 from motor.motor_asyncio import AsyncIOMotorDatabase
 from .enums.DatabaseConfig import DatabaseConfig
-from .db_schemes.asset import Asset
+from .db_schemes.Asset import Asset
 from bson.objectid import ObjectId
 from typing import Union, Self
 
