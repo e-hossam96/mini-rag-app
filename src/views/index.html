@@ -1,0 +1,51 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>RAG Application</title>
+    <link rel="stylesheet" href="styles.css">
+</head>
+
+<body>
+    <div class="container">
+        <div class="project-section">
+            <input type="text" id="project-name" placeholder="Enter Project Name">
+        </div>
+
+        <div class="main-content">
+            <div class="document-upload-panel">
+                <div class="file-upload-container">
+                    <input type="file" id="file-upload" multiple>
+                    <label for="file-upload" class="file-upload-label">
+                        Drag and drop files here or click to select
+                    </label>
+                    <div id="file-list"></div>
+                </div>
+
+                <div class="action-buttons">
+                    <button id="upload-btn">Upload</button>
+                    <button id="process-btn">Process</button>
+                    <button id="vectorize-btn">Vectorize</button>
+                </div>
+            </div>
+        </div>
+
+        <div class="chat-section">
+            <div class="chat-container">
+                <div id="chat-messages"></div>
+                <div class="chat-input-area">
+                    <input type="text" id="chat-input" placeholder="Type your message...">
+                    <button id="send-btn">Send</button>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <script src="script.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/marked/marked.min.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/dompurify@3.0.3/dist/purify.min.js"></script>
+</body>
+
+</html>

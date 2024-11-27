@@ -8,6 +8,7 @@ from contextlib import asynccontextmanager
 from stores.llm.LLMProviderFactory import LLMProviderFactory
 from stores.vectordb.VectorDBProviderFactory import VectorDBProviderFactory
 from stores.llm.templates.template_parser import TemplateParser
+from fastapi.middleware.cors import CORSMiddleware
 
 
 def connect_mongo(
@@ -65,6 +66,19 @@ async def connect_lifespan_clients(app: FastAPI):
 
 
 app = FastAPI(lifespan=connect_lifespan_clients)
+
+# allow requests from front end
+origins = [
+    "http://localhost:5000",  # local frontend URL
+]
+
+app.add_middleware(
+    CORSMiddleware,
+    allow_origins=origins,  # allows CORS for these origins
+    allow_credentials=True,
+    allow_methods=["*"],  # allow all HTTP methods
+    allow_headers=["*"],  # allow all headers
+)
 
 
 app.include_router(base.base_router)

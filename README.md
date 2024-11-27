@@ -78,3 +78,29 @@ uvicorn main:app --reload --host 0.0.0.0 --port 8000
 ## Usage
 
 You can use the exported **Postman** collection provided [here](./src/assets/mini-rag-app.postman_collection.json) and the sample _text_ files to send queries to the different endpoints and evaluate the results.
+
+## Front End
+
+The current front end code contain buttons to send requests to 4 routes out of the six defined so far.
+
+To start the front end server, navigate to to `src/views/` and run the following command.
+
+```bash
+python -m http.server 5000
+```
+
+This will launch the server on port `5000` which can be accessed using the _URL_ [http://localhost:5000](http://localhost:5000)
+
+Some interactions has been recorded as follows:
+
+- Sample Document (PDF research paper)
+
+![Sample Document](./src/assets/sample_doc.png)
+
+- Application Interface
+
+![Web App](./src/assets/web_app.png)
+
+- MongoDB with Text Chunks
+
+![MongoDB Chunks](./src/assets/mongodb.png)
