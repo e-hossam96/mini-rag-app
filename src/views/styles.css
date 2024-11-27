@@ -1,0 +1,234 @@
+/* General Styles */
+body {
+    font-family: 'Arial', sans-serif;
+    margin: 0 auto;
+    padding: 0;
+    background-color: #f4f4f4;
+    color: #333;
+}
+
+.container {
+    max-width: 1000px;
+    margin: 0 auto;
+    padding: 60px;
+}
+
+.project-section {
+    width: 100%;
+    margin-bottom: 40px;
+    /* Increased margin for more roominess between project name and upload section */
+}
+
+#project-name {
+    width: 25%;
+    padding: 10px;
+    border: 1px solid #ddd;
+    border-radius: 4px;
+    font-size: 16px;
+    box-sizing: border-box;
+    margin: 0 auto;
+    /* Center the reduced-width input */
+}
+
+/* Document Upload Panel */
+.document-upload-panel {
+    display: flex;
+    flex-direction: column;
+    gap: 20px;
+    background-color: white;
+    border-radius: 8px;
+    padding: 20px;
+    box-shadow: 0 2px 5px rgba(0, 0, 0, 0.1);
+    margin-bottom: 25px;
+    /* Maintains space before chat section, smaller than project name margin */
+}
+
+.file-upload-container {
+    border: 2px dashed #ccc;
+    border-radius: 8px;
+    padding: 20px;
+    text-align: center;
+    background-color: white;
+    min-height: 100px;
+}
+
+#file-upload {
+    display: none;
+}
+
+.file-upload-label {
+    cursor: pointer;
+    color: #666;
+}
+
+#file-list {
+    margin-top: 10px;
+    text-align: left;
+}
+
+.action-buttons {
+    display: flex;
+    gap: 10px;
+    width: 100%;
+    /* Span entire width of upload container */
+}
+
+.action-buttons button {
+    flex: 1;
+    /* Evenly distribute buttons across full width */
+    padding: 10px;
+    background-color: #4CAF50;
+    color: white;
+    border: none;
+    border-radius: 4px;
+    cursor: pointer;
+    transition: background-color 0.3s;
+}
+
+.action-buttons button:hover {
+    background-color: #45a049;
+}
+
+/* Chat Section */
+.chat-section {
+    margin-top: 20px;
+}
+
+.chat-container {
+    display: flex;
+    flex-direction: column;
+    background-color: white;
+    border-radius: 8px;
+    box-shadow: 0 2px 5px rgba(0, 0, 0, 0.1);
+    min-height: 200px;
+}
+
+#chat-messages {
+    flex-grow: 1;
+    overflow-y: auto;
+    padding: 15px;
+    max-height: 500px;
+    display: flex;
+    flex-direction: column;
+}
+
+.chat-input-area {
+    display: flex;
+    padding: 15px;
+    border-top: 1px solid #eee;
+}
+
+#chat-input {
+    flex-grow: 1;
+    padding: 10px;
+    border: 1px solid #ddd;
+    border-radius: 4px;
+    margin-right: 10px;
+}
+
+#send-btn {
+    padding: 10px 20px;
+    background-color: #007bff;
+    color: white;
+    border: none;
+    border-radius: 4px;
+    cursor: pointer;
+    transition: background-color 0.3s;
+}
+
+#send-btn:hover {
+    background-color: #0056b3;
+}
+
+/* Chat Message Styles */
+.user-message,
+.bot-message {
+    margin-bottom: 15px;
+    padding: 10px;
+    border-radius: 8px;
+    max-width: 85%;
+    overflow-wrap: break-word;
+}
+
+.user-message {
+    background-color: #f1f0f0;
+    color: #333;
+    align-self: flex-start;
+    margin-right: auto;
+}
+
+.bot-message {
+    background-color: #f1f0f0;
+    color: #333;
+    align-self: flex-end;
+    margin-left: auto;
+}
+
+#chat-messages {
+    display: flex;
+    flex-direction: column;
+}
+
+/* Markdown Styles */
+.bot-message p,
+.bot-message ul,
+.bot-message ol,
+.bot-message pre,
+.bot-message code,
+.bot-message h1,
+.bot-message h2,
+.bot-message h3 {
+    margin: 0;
+}
+
+.bot-message p {
+    margin-bottom: 10px;
+}
+
+.bot-message ul,
+.bot-message ol {
+    margin: 10px 0;
+    padding-left: 20px;
+}
+
+.bot-message li {
+    margin-bottom: 5px;
+}
+
+.bot-message code {
+    background-color: #f8f9fa;
+    padding: 2px 4px;
+    border-radius: 4px;
+    font-family: monospace;
+    font-size: 14px;
+}
+
+.bot-message pre {
+    background-color: #f8f9fa;
+    padding: 10px;
+    border-radius: 8px;
+    font-family: monospace;
+    font-size: 14px;
+    overflow-x: auto;
+    margin-bottom: 10px;
+}
+
+.bot-message h1,
+.bot-message h2,
+.bot-message h3 {
+    font-weight: bold;
+    margin-bottom: 10px;
+    color: #333;
+}
+
+.bot-message h1 {
+    font-size: 18px;
+}
+
+.bot-message h2 {
+    font-size: 16px;
+}
+
+.bot-message h3 {
+    font-size: 14px;
+}
